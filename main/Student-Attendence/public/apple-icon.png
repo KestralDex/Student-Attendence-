@@ -1,0 +1,638 @@
+<!DOCTYPE html><html lang="en" data-theme="dark" data-theme-option="dark"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>KestralDex/Student-Attendence- (imported from GitHub) - Bolt.new</title><meta name="description" content="Prompt, run, edit &amp; publish apps"/><meta property="og:type" content="object"/><meta property="og:site_name" content="bolt.new"/><meta property="og:title" content="KestralDex/Student-Attendence- (imported from GitHub) - Bolt.new"/><meta property="og:description" content="Prompt, run, edit &amp; publish apps"/><meta property="og:image" content="https://social-img.staticblitz.com/bolt-projects/github-gjkwz1tv"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="KestralDex/Student-Attendence- (imported from GitHub) - Bolt.new"/><meta name="twitter:description" content="Prompt, run, edit &amp; publish apps"/><meta name="twitter:image" content="https://social-img.staticblitz.com/bolt-projects/github-gjkwz1tv"/><meta name="twitter:site" content="@StackBlitz"/><meta name="bolt-version" content="1d6938f"/><script>(function detectTheme() {
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  globalThis.prefersDark = prefersDark;
+
+  const themeOption = document.documentElement.getAttribute('data-theme-option');
+
+  if (themeOption === 'system') {
+    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+  }
+})();
+</script><link rel="stylesheet" href="/assets/root-BmcSichz.css"/><link rel="stylesheet" href="/assets/LightRaysCloud-DqVcXTCJ.css"/><link rel="stylesheet" href="/assets/LightRays-apN2LHcc.css"/><link rel="icon" href="/static/favicon.svg" type="image/svg+xml"/><link rel="icon" href="/static/favicon-48x48.png" type="image/png" sizes="48x48"/><link rel="icon" href="/static/favicon-96x96.png" type="image/png" sizes="96x96"/><link rel="icon" href="/static/favicon-192x192.png" type="image/png" sizes="192x192"/><link rel="apple-touch-icon" href="/static/apple-touch-icon.png" sizes="180x180"/><link rel="stylesheet" href="/assets/ReactToastify-Bh76j7cs.css"/><link rel="stylesheet" href="/assets/tailwind-compat-DeJTMLhw.css"/><link rel="stylesheet" href="/assets/index--47ce-fj.css"/><link rel="stylesheet" href="/assets/xterm-LZoznX6r.css"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/><link rel="preload" href="/static/fonts/inter-display-semibold.woff2" as="font" type="font/woff2" crossorigin="anonymous"/><link rel="preload" href="/static/fonts/inter-display-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"/><link rel="stylesheet" href="/static/fonts/fonts.css"/><link rel="stylesheet" href="/assets/mcp-oauth-listener-BH3yPH2w.css"/><link rel="stylesheet" href="/assets/Chat-UZczflrs.css"/><link rel="stylesheet" href="/assets/Prompt-DIhqngLS.css"/><script>(function createWorkaroundGlobal() {
+  /**
+   * A bug in wrangler injects a __name call in these script tags.
+   *
+   * @see https://github.com/cloudflare/workers-sdk/issues/7107#issuecomment-2454829854
+   */
+  window['__' + 'name'] = () => {
+    // noop
+  };
+})();
+</script><script>// prevent modifications to the DOM until hydration is finished
+(function blockDOMMutations() {
+  const observer = new MutationObserver((mutations) => {
+    observer.disconnect();
+
+    // we iterate backwards so that the oldValue is always correct by the end, in the case of simultaneous changes
+    mutations.reverse().forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        mutation.addedNodes.forEach((node) => {
+          /**
+           * Modifications to the head do not affect hydration (vite uses this for HMR styles).
+           *
+           * Nodes added as children of the body do not affect hydration (WebContainer uses this for the iframe).
+           */
+          if ([document.head, document.body, document.documentElement].includes(node.parentNode)) {
+            return;
+          }
+
+          if (node.parentNode) {
+            node.parentNode.removeChild(node);
+          }
+        });
+
+        mutation.removedNodes.forEach((node) => {
+          if (mutation.previousSibling) {
+            mutation.target.insertBefore(node, mutation.previousSibling.nextSibling);
+          } else if (mutation.target) {
+            mutation.target.appendChild(node);
+          }
+        });
+      }
+
+      if (mutation.type === 'attributes') {
+        const { target, attributeName, oldValue } = mutation;
+
+        if (attributeName) {
+          if (oldValue === null) {
+            target.removeAttribute(attributeName);
+          } else {
+            target.setAttribute(attributeName, oldValue);
+          }
+        }
+      }
+
+      if (mutation.type === 'characterData') {
+        mutation.target.data = mutation.oldValue ?? '';
+      }
+    });
+
+    observe();
+  });
+
+  function observe() {
+    observer.observe(document, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeOldValue: true,
+      characterData: true,
+      characterDataOldValue: true,
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', observe);
+
+  window.__allowDOMMutations = () => {
+    observer.disconnect();
+    window.__loadingPrompt = document.querySelector('textarea')?.value;
+  };
+})();
+</script></head><body class="bg-bolt-elements-background-depth-1"><div id="root" class="w-full h-full"><div class="flex size-full"><div class="size-full flex flex-col"><div class="size-full flex flex-col border-bolt-elements-borderColor light:bg-bolt-ds-surface"><header class="flex shrink-0 select-none selection-accent items-center pl-5 pr-4 border-b h-[var(--header-height)] z-21 fixed w-full backdrop-blur-[17px] border-bolt-elements-borderColor"><div class="flex grow-1 basis-60 items-center gap-2 text-bolt-elements-textPrimary"><div class="z-logo"><a href="/" class="text-2xl font-semibold text-accent flex items-center"><span class="i-bolt:logos-bolt-new?mask w-[70.5px] inline-block"></span></a></div></div><nav aria-label="Main" data-orientation="horizontal" dir="ltr" class="relative h-full grow-1 shrink-0 justify-center hidden lg:flex animated opacity-0"><div style="position:relative"><ul data-orientation="horizontal" class="flex flex-row gap-3 h-full list-none m-0 p-0" dir="ltr"><li class="h-full"><a href="https://discord.com/invite/stackblitz" target="_blank" rel="noopener noreferrer" class="h-full flex text-sm font-medium items-center px-1 bg-transparent text-bolt-ds-textSecondary [&amp;:hover:where(:not(:disabled))]:text-bolt-ds-textPrimary lg:px-2.5 no-underline" data-radix-collection-item="">Community</a></li><li class="h-full"><a href="/enterprise" target="_blank" rel="noopener noreferrer" class="h-full flex text-sm font-medium items-center px-1 bg-transparent text-bolt-ds-textSecondary [&amp;:hover:where(:not(:disabled))]:text-bolt-ds-textPrimary lg:px-2.5 no-underline" data-radix-collection-item="">Enterprise</a></li><li class="h-full"><button id="radix-:Rpklb5:-trigger-radix-:R1mpklb5:" data-state="closed" aria-expanded="false" aria-controls="radix-:Rpklb5:-content-radix-:R1mpklb5:" class="h-full text-sm font-medium px-1 text-bolt-ds-textSecondary [&amp;:hover:where(:not(:disabled))]:text-bolt-ds-textPrimary lg:px-2.5 group flex items-center gap-1 bg-transparent border-0 cursor-default data-[state=open]:text-bolt-ds-textPrimary" data-radix-collection-item="">Resources<span class="i-ph:caret-down text-base transition-transform group-data-[state=open]:-rotate-180"></span></button></li><li class="h-full"><a href="/careers" target="_blank" rel="noopener noreferrer" class="h-full flex text-sm font-medium items-center px-1 bg-transparent text-bolt-ds-textSecondary [&amp;:hover:where(:not(:disabled))]:text-bolt-ds-textPrimary lg:px-2.5 no-underline" data-radix-collection-item="">Careers</a></li><li class="h-full"><a href="/pricing" class="h-full flex text-sm font-medium items-center px-1 bg-transparent text-bolt-ds-textSecondary [&amp;:hover:where(:not(:disabled))]:text-bolt-ds-textPrimary lg:px-2.5 no-underline" data-radix-collection-item="">Pricing</a></li></ul></div><div class="absolute top-full left-1/2 -translate-x-1/2"></div></nav><div class="flex grow-1 basis-60 justify-end items-center gap-3 animated opacity-0"><ul class="inline-flex items-center gap-3"><li class="inline-flex rounded-sm focus-within:ring-2 focus-within:ring-bolt-ds-brandHighlight"><a data-icon="i-bolt:logos-discord?mask" href="https://discord.com/invite/stackblitz" aria-label="Discord" target="_blank" rel="noopener noreferrer" class="i-bolt:logos-discord?mask text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary outline-none text-[24px]"></a></li><li class="inline-flex rounded-sm focus-within:ring-2 focus-within:ring-bolt-ds-brandHighlight"><a data-icon="i-bolt:logos-linkedin?mask" href="https://www.linkedin.com/company/stackblitz" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer" class="i-bolt:logos-linkedin?mask text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary outline-none text-[18px]"></a></li><li class="inline-flex rounded-sm focus-within:ring-2 focus-within:ring-bolt-ds-brandHighlight"><a data-icon="i-bolt:logos-x?mask" href="https://x.com/boltdotnew" aria-label="Twitter/X" target="_blank" rel="noopener noreferrer" class="i-bolt:logos-x?mask text-bolt-elements-textSecondary text-[22px] hover:text-bolt-elements-textPrimary outline-none"></a></li><li class="inline-flex rounded-sm focus-within:ring-2 focus-within:ring-bolt-ds-brandHighlight"><a data-icon="i-bolt:logos-reddit?mask" href="https://www.reddit.com/r/boltnewbuilders/" aria-label="Reddit" target="_blank" rel="noopener noreferrer" class="i-bolt:logos-reddit?mask text-bolt-elements-textSecondary text-[22px] hover:text-bolt-elements-textPrimary outline-none"></a></li></ul><div class="lg:hidden flex"><button class="flex items-center justify-center p-2.5 rounded-md focus:outline-none bg-transparent" aria-label="Open menu"><span class="text-base i-heroicons:bars-3"></span></button></div></div></header><!--$--><!--/$--></div></div></div></div><script>((STORAGE_KEY2, restoreKey) => {
+    if (!window.history.state || !window.history.state.key) {
+      let key2 = Math.random().toString(32).slice(2);
+      window.history.replaceState({
+        key: key2
+      }, "");
+    }
+    try {
+      let positions = JSON.parse(sessionStorage.getItem(STORAGE_KEY2) || "{}");
+      let storedY = positions[restoreKey || window.history.state.key];
+      if (typeof storedY === "number") {
+        window.scrollTo(0, storedY);
+      }
+    } catch (error7) {
+      console.error(error7);
+      sessionStorage.removeItem(STORAGE_KEY2);
+    }
+  })("positions", null)</script><link rel="modulepreload" href="/assets/entry.client-DcQiOz7k.js"/><link rel="modulepreload" href="/assets/jsx-runtime-BMx6HyDf.js"/><link rel="modulepreload" href="/assets/index-CC4vrs0o.js"/><link rel="modulepreload" href="/assets/index-D6CpLd2b.js"/><link rel="modulepreload" href="/assets/constants-1BAdFFhm.js"/><link rel="modulepreload" href="/assets/sentry.client-BPviTxHE.js"/><link rel="modulepreload" href="/assets/performance-CGs31SRk.js"/><link rel="modulepreload" href="/assets/index-DoqzyL8F.js"/><link rel="modulepreload" href="/assets/index-DFE7Qt-N.js"/><link rel="modulepreload" href="/assets/components--wnMcVV1.js"/><link rel="modulepreload" href="/assets/Empty-DjsY8RY4.js"/><link rel="modulepreload" href="/assets/index-B6cQHJgj.js"/><link rel="modulepreload" href="/assets/stripIndents-BkVfsGRn.js"/><link rel="modulepreload" href="/assets/compare-Br3z3FUS-B1AuoCM-.js"/><link rel="modulepreload" href="/assets/react-toastify.esm-CUlot4qK.js"/><link rel="modulepreload" href="/assets/client-only-DMwn8nR_.js"/><link rel="modulepreload" href="/assets/index-fX9EBmZ4.js"/><link rel="modulepreload" href="/assets/growthbook-DKqGPdnm.js"/><link rel="modulepreload" href="/assets/ErrorBoundary-Bod_sFGQ.js"/><link rel="modulepreload" href="/assets/ToastMessage-BgYR2wrZ.js"/><link rel="modulepreload" href="/assets/theme-BSEH2gtj.js"/><link rel="modulepreload" href="/assets/Alert-C-1ZXPcI.js"/><link rel="modulepreload" href="/assets/queryClient-Bmbr4Jyl.js"/><link rel="modulepreload" href="/assets/QueryClientProvider-XBETqAlY.js"/><link rel="modulepreload" href="/assets/login-DKMXsI_y.js"/><link rel="modulepreload" href="/assets/clsx-DXYlTy0V.js"/><link rel="modulepreload" href="/assets/bundle-mjs-DU0l7zhQ.js"/><link rel="modulepreload" href="/assets/invariant-DkBQM-xX.js"/><link rel="modulepreload" href="/assets/index-CikEqSG_.js"/><link rel="modulepreload" href="/assets/Header-De1DTUT3.js"/><link rel="modulepreload" href="/assets/login-DA1KOztd.js"/><link rel="modulepreload" href="/assets/LightRaysCloud.client-Ci87rrED.js"/><link rel="modulepreload" href="/assets/classNames-Cmi3cVpn.js"/><link rel="modulepreload" href="/assets/LoadingDots-DbNm4U1r.js"/><link rel="modulepreload" href="/assets/config-B5G_1wxb.js"/><link rel="modulepreload" href="/assets/Logo-wLKSKZf8.js"/><link rel="modulepreload" href="/assets/resources-links-Nyk23ebw.js"/><link rel="modulepreload" href="/assets/Link-DNaYDSdo.js"/><link rel="modulepreload" href="/assets/animationVariants-BnzZbKmg.js"/><link rel="modulepreload" href="/assets/easings-DAxtP8tV.js"/><link rel="modulepreload" href="/assets/BaseMenuDropdown-BL1TV8xi.js"/><link rel="modulepreload" href="/assets/request-with-auth-CbaUPwtl.js"/><link rel="modulepreload" href="/assets/token-CsfDPh_j.js"/><link rel="modulepreload" href="/assets/description-8kOH7JmK.js"/><link rel="modulepreload" href="/assets/LazyLoadWrapper-BggCeXxl.js"/><link rel="modulepreload" href="/assets/projectVisibility-BAyU-Y1m.js"/><link rel="modulepreload" href="/assets/LightRays.client-DhCD_qXz.js"/><link rel="modulepreload" href="/assets/LightRaysCore-DAupZldW.js"/><link rel="modulepreload" href="/assets/LightRays.module-B24XLaH3.js"/><link rel="modulepreload" href="/assets/query-QnPL2Dt9.js"/><link rel="modulepreload" href="/assets/mutation-ib4E7j4w.js"/><link rel="modulepreload" href="/assets/oauth-805WSOah.js"/><link rel="modulepreload" href="/assets/root-21K0_59I.js"/><link rel="modulepreload" href="/assets/mcp-oauth-listener-CXM1v-xF.js"/><link rel="modulepreload" href="/assets/organizations-DYc24SnH.js"/><link rel="modulepreload" href="/assets/url-Bon0Jy9_.js"/><link rel="modulepreload" href="/assets/withSpinner-Djjdubiv.js"/><link rel="modulepreload" href="/assets/designSystemStepper-D1HmNJQY.js"/><link rel="modulepreload" href="/assets/UpgradePlanDialogs-B5_kkMWZ.js"/><link rel="modulepreload" href="/assets/ViewDesignSystem-BLVPiOD_.js"/><link rel="modulepreload" href="/assets/organizationMembers-cM3fzas-.js"/><link rel="modulepreload" href="/assets/DeleteChatDialogContent-DhODATeD.js"/><link rel="modulepreload" href="/assets/useTrackOnMount-DRh3TQXp.js"/><link rel="modulepreload" href="/assets/pricing-BNeoSz0z.js"/><link rel="modulepreload" href="/assets/tokens-stats-BZKpBAvN.js"/><link rel="modulepreload" href="/assets/menu-BLr4F7gp.js"/><link rel="modulepreload" href="/assets/applicationManager-hsjw9eT9.js"/><link rel="modulepreload" href="/assets/connect._provider-Su_OVWU7.js"/><link rel="modulepreload" href="/assets/index-CUyAm99o.js"/><link rel="modulepreload" href="/assets/format-DhT03U2M.js"/><link rel="modulepreload" href="/assets/useQuery-D8_ij-OO.js"/><link rel="modulepreload" href="/assets/useMutation-DzMpVxu4.js"/><link rel="modulepreload" href="/assets/overlay-DqwW909H.js"/><link rel="modulepreload" href="/assets/command-Ds6w8NxF.js"/><link rel="modulepreload" href="/assets/jszip.min-DmLO6sZ3.js"/><link rel="modulepreload" href="/assets/mutationOptions-DhmP6lBp.js"/><link rel="modulepreload" href="/assets/subscription-CP4bEvax.js"/><link rel="modulepreload" href="/assets/download-DDDUyPFs.js"/><link rel="modulepreload" href="/assets/AccountSelectMenu-DUoCTMTq.js"/><link rel="modulepreload" href="/assets/Pagination-MqhSTw8K.js"/><link rel="modulepreload" href="/assets/ResumeSubscriptionConfirmationModal.client-DTXD7Ktl.js"/><link rel="modulepreload" href="/assets/index-Jga8DJii.js"/><link rel="modulepreload" href="/assets/path-BFy1X2yH.js"/><link rel="modulepreload" href="/assets/ProjectSearchUI-Dq-bPf4X.js"/><link rel="modulepreload" href="/assets/teamTemplates-DXQXnEkz.js"/><link rel="modulepreload" href="/assets/en-US-CcYwgU8A.js"/><link rel="modulepreload" href="/assets/api-zKgtCvku.js"/><link rel="modulepreload" href="/assets/detectBrowser-bP0Qsk21.js"/><link rel="modulepreload" href="/assets/Accordion-4rRhpx7K.js"/><link rel="modulepreload" href="/assets/github-BOSNO3Xy.js"/><link rel="modulepreload" href="/assets/useProjectVisibility-BeuC89S8.js"/><link rel="modulepreload" href="/assets/prepare-body-BIaSCLS0.js"/><link rel="modulepreload" href="/assets/agent-xHUMlZzI.js"/><link rel="modulepreload" href="/assets/sheetNavigation-CsvZ-IVW.js"/><link rel="modulepreload" href="/assets/IndexLayout-BMsa0yUk.js"/><link rel="modulepreload" href="/assets/meta-B8tg8P4-.js"/><link rel="modulepreload" href="/assets/version-history-DynoClru.js"/><link rel="modulepreload" href="/assets/stripe-CoaAzk1j.js"/><link rel="modulepreload" href="/assets/util-Bsdl-gKh.js"/><link rel="modulepreload" href="/assets/index-Cu0zN-3n.js"/><link rel="modulepreload" href="/assets/openWithStackblitzAuth-Q3Dxx3IW.js"/><link rel="modulepreload" href="/assets/formatDistanceToNow-oOLRuD1_.js"/><link rel="modulepreload" href="/assets/constructNow-7_LswxiF.js"/><link rel="modulepreload" href="/assets/init-ref-BzeFkN1M.js"/><link rel="modulepreload" href="/assets/ProgressBar-CCQTl69D.js"/><link rel="modulepreload" href="/assets/getDefaultOptions-DgmuIKx7.js"/><link rel="modulepreload" href="/assets/projects-vIUJfEkW.js"/><link rel="modulepreload" href="/assets/bolt-connect-BtfWVwj5.js"/><link rel="modulepreload" href="/assets/ai-BU0u_yw4.js"/><link rel="modulepreload" href="/assets/current-user-rails-client-zCJ6SXfj.js"/><link rel="modulepreload" href="/assets/use-reduced-motion-DMEgiw6P.js"/><link rel="modulepreload" href="/assets/client-github-lYY-laFk.js"/><link rel="modulepreload" href="/assets/index-COcektrn.js"/><link rel="modulepreload" href="/assets/AccountSelector.client-CaWZZuCj.js"/><link rel="modulepreload" href="/assets/user-BzskR7qI.js"/><link rel="modulepreload" href="/assets/useActiveOrganization-V5XqVQqa.js"/><link rel="modulepreload" href="/assets/Sheet-D69EOZaD.js"/><link rel="modulepreload" href="/assets/useDashboardLayout-CcgYeV-N.js"/><link rel="modulepreload" href="/assets/useInitializeUserStore-ZSzt8_-l.js"/><link rel="modulepreload" href="/assets/_chat-Dqlz0kzu.js"/><link rel="modulepreload" href="/assets/Chat.client-Dr5J7AKz.js"/><link rel="modulepreload" href="/assets/index-DZunOd-B.js"/><link rel="modulepreload" href="/assets/Prompt-BUhyMfEl.js"/><link rel="modulepreload" href="/assets/scroll-overflow-mask-FL_LyxDi.js"/><link rel="modulepreload" href="/assets/ConnectToFigmaDialog-Dubp3fG5.js"/><link rel="modulepreload" href="/assets/ProjectGridSkeleton-CJ2JC_-b.js"/><link rel="modulepreload" href="/assets/isYesterday-18O9Fn7T.js"/><link rel="modulepreload" href="/assets/addDays-_XW3niI1.js"/><link rel="modulepreload" href="/assets/useTokenRefresh-j119wHcG.js"/><link rel="modulepreload" href="/assets/DiscordSupportModal-CAjGDvh7.js"/><link rel="modulepreload" href="/assets/utils-A9V70DHc.js"/><link rel="modulepreload" href="/assets/Menu.client-CB2chHls.js"/><link rel="modulepreload" href="/assets/date-binning-DQDLuGpp.js"/><link rel="modulepreload" href="/assets/isThisWeek-BMo_a2QY.js"/><link rel="modulepreload" href="/assets/AllProjects-Xe8VUCnI.js"/><link rel="modulepreload" href="/assets/useProjectsOwnerContext-BSh2EBlo.js"/><link rel="modulepreload" href="/assets/RecentProjects-DkcohYTs.js"/><link rel="modulepreload" href="/assets/client-error-C4KDEDWg.js"/><link rel="modulepreload" href="/assets/index-DLKhIdFm.js"/><link rel="modulepreload" href="/assets/index-DwiuBq9q.js"/><link rel="modulepreload" href="/assets/_chat.~._slug-qGfqGE_p.js"/><script>window.__remixContext = {"basename":"/","future":{"v3_fetcherPersist":true,"v3_relativeSplatPath":true,"v3_throwAbortReason":true,"v3_routeConfig":false,"v3_singleFetch":true,"v3_lazyRouteDiscovery":true,"unstable_optimizeDeps":false},"isSpaMode":false};window.__remixContext.stream = new ReadableStream({start(controller){window.__remixContext.streamController = controller;}}).pipeThrough(new TextEncoderStream());</script><script type="module" async="">;
+import * as route0 from "/assets/root-21K0_59I.js";
+import * as route1 from "/assets/_chat-Dqlz0kzu.js";
+import * as route2 from "/assets/_chat.~._slug-qGfqGE_p.js";
+window.__remixManifest = {
+  "entry": {
+    "module": "/assets/entry.client-DcQiOz7k.js",
+    "imports": [
+      "/assets/jsx-runtime-BMx6HyDf.js",
+      "/assets/index-CC4vrs0o.js",
+      "/assets/index-D6CpLd2b.js",
+      "/assets/constants-1BAdFFhm.js",
+      "/assets/sentry.client-BPviTxHE.js",
+      "/assets/performance-CGs31SRk.js",
+      "/assets/index-DoqzyL8F.js",
+      "/assets/index-DFE7Qt-N.js",
+      "/assets/components--wnMcVV1.js"
+    ],
+    "css": []
+  },
+  "routes": {
+    "root": {
+      "id": "root",
+      "path": "",
+      "hasAction": false,
+      "hasLoader": true,
+      "hasClientAction": false,
+      "hasClientLoader": false,
+      "hasErrorBoundary": true,
+      "module": "/assets/root-21K0_59I.js",
+      "imports": [
+        "/assets/jsx-runtime-BMx6HyDf.js",
+        "/assets/index-CC4vrs0o.js",
+        "/assets/index-D6CpLd2b.js",
+        "/assets/constants-1BAdFFhm.js",
+        "/assets/sentry.client-BPviTxHE.js",
+        "/assets/performance-CGs31SRk.js",
+        "/assets/index-DoqzyL8F.js",
+        "/assets/index-DFE7Qt-N.js",
+        "/assets/components--wnMcVV1.js",
+        "/assets/Empty-DjsY8RY4.js",
+        "/assets/index-B6cQHJgj.js",
+        "/assets/stripIndents-BkVfsGRn.js",
+        "/assets/compare-Br3z3FUS-B1AuoCM-.js",
+        "/assets/react-toastify.esm-CUlot4qK.js",
+        "/assets/client-only-DMwn8nR_.js",
+        "/assets/index-fX9EBmZ4.js",
+        "/assets/growthbook-DKqGPdnm.js",
+        "/assets/ErrorBoundary-Bod_sFGQ.js",
+        "/assets/ToastMessage-BgYR2wrZ.js",
+        "/assets/theme-BSEH2gtj.js",
+        "/assets/Alert-C-1ZXPcI.js",
+        "/assets/queryClient-Bmbr4Jyl.js",
+        "/assets/QueryClientProvider-XBETqAlY.js",
+        "/assets/login-DKMXsI_y.js",
+        "/assets/clsx-DXYlTy0V.js",
+        "/assets/bundle-mjs-DU0l7zhQ.js",
+        "/assets/invariant-DkBQM-xX.js",
+        "/assets/index-CikEqSG_.js",
+        "/assets/Header-De1DTUT3.js",
+        "/assets/login-DA1KOztd.js",
+        "/assets/LightRaysCloud.client-Ci87rrED.js",
+        "/assets/classNames-Cmi3cVpn.js",
+        "/assets/LoadingDots-DbNm4U1r.js",
+        "/assets/config-B5G_1wxb.js",
+        "/assets/Logo-wLKSKZf8.js",
+        "/assets/resources-links-Nyk23ebw.js",
+        "/assets/Link-DNaYDSdo.js",
+        "/assets/animationVariants-BnzZbKmg.js",
+        "/assets/easings-DAxtP8tV.js",
+        "/assets/BaseMenuDropdown-BL1TV8xi.js",
+        "/assets/request-with-auth-CbaUPwtl.js",
+        "/assets/token-CsfDPh_j.js",
+        "/assets/description-8kOH7JmK.js",
+        "/assets/LazyLoadWrapper-BggCeXxl.js",
+        "/assets/projectVisibility-BAyU-Y1m.js",
+        "/assets/LightRays.client-DhCD_qXz.js",
+        "/assets/LightRaysCore-DAupZldW.js",
+        "/assets/LightRays.module-B24XLaH3.js",
+        "/assets/query-QnPL2Dt9.js",
+        "/assets/mutation-ib4E7j4w.js",
+        "/assets/oauth-805WSOah.js"
+      ],
+      "css": [
+        "/assets/root-BmcSichz.css",
+        "/assets/LightRaysCloud-DqVcXTCJ.css",
+        "/assets/LightRays-apN2LHcc.css"
+      ]
+    },
+    "routes/_chat": {
+      "id": "routes/_chat",
+      "parentId": "root",
+      "hasAction": false,
+      "hasLoader": true,
+      "hasClientAction": false,
+      "hasClientLoader": false,
+      "hasErrorBoundary": false,
+      "module": "/assets/_chat-Dqlz0kzu.js",
+      "imports": [
+        "/assets/jsx-runtime-BMx6HyDf.js",
+        "/assets/index-B6cQHJgj.js",
+        "/assets/index-CC4vrs0o.js",
+        "/assets/client-only-DMwn8nR_.js",
+        "/assets/Empty-DjsY8RY4.js",
+        "/assets/mcp-oauth-listener-CXM1v-xF.js",
+        "/assets/index-fX9EBmZ4.js",
+        "/assets/react-toastify.esm-CUlot4qK.js",
+        "/assets/organizations-DYc24SnH.js",
+        "/assets/constants-1BAdFFhm.js",
+        "/assets/url-Bon0Jy9_.js",
+        "/assets/withSpinner-Djjdubiv.js",
+        "/assets/designSystemStepper-D1HmNJQY.js",
+        "/assets/UpgradePlanDialogs-B5_kkMWZ.js",
+        "/assets/classNames-Cmi3cVpn.js",
+        "/assets/Alert-C-1ZXPcI.js",
+        "/assets/ViewDesignSystem-BLVPiOD_.js",
+        "/assets/organizationMembers-cM3fzas-.js",
+        "/assets/DeleteChatDialogContent-DhODATeD.js",
+        "/assets/useTrackOnMount-DRh3TQXp.js",
+        "/assets/pricing-BNeoSz0z.js",
+        "/assets/config-B5G_1wxb.js",
+        "/assets/tokens-stats-BZKpBAvN.js",
+        "/assets/menu-BLr4F7gp.js",
+        "/assets/applicationManager-hsjw9eT9.js",
+        "/assets/connect._provider-Su_OVWU7.js",
+        "/assets/index-CUyAm99o.js",
+        "/assets/format-DhT03U2M.js",
+        "/assets/useQuery-D8_ij-OO.js",
+        "/assets/QueryClientProvider-XBETqAlY.js",
+        "/assets/useMutation-DzMpVxu4.js",
+        "/assets/queryClient-Bmbr4Jyl.js",
+        "/assets/description-8kOH7JmK.js",
+        "/assets/LoadingDots-DbNm4U1r.js",
+        "/assets/Link-DNaYDSdo.js",
+        "/assets/overlay-DqwW909H.js",
+        "/assets/login-DKMXsI_y.js",
+        "/assets/theme-BSEH2gtj.js",
+        "/assets/index-D6CpLd2b.js",
+        "/assets/command-Ds6w8NxF.js",
+        "/assets/jszip.min-DmLO6sZ3.js",
+        "/assets/mutationOptions-DhmP6lBp.js",
+        "/assets/subscription-CP4bEvax.js",
+        "/assets/download-DDDUyPFs.js",
+        "/assets/AccountSelectMenu-DUoCTMTq.js",
+        "/assets/Pagination-MqhSTw8K.js",
+        "/assets/index-DFE7Qt-N.js",
+        "/assets/ResumeSubscriptionConfirmationModal.client-DTXD7Ktl.js",
+        "/assets/index-Jga8DJii.js",
+        "/assets/path-BFy1X2yH.js",
+        "/assets/ProjectSearchUI-Dq-bPf4X.js",
+        "/assets/teamTemplates-DXQXnEkz.js",
+        "/assets/en-US-CcYwgU8A.js",
+        "/assets/api-zKgtCvku.js",
+        "/assets/detectBrowser-bP0Qsk21.js",
+        "/assets/clsx-DXYlTy0V.js",
+        "/assets/ToastMessage-BgYR2wrZ.js",
+        "/assets/invariant-DkBQM-xX.js",
+        "/assets/Accordion-4rRhpx7K.js",
+        "/assets/Header-De1DTUT3.js",
+        "/assets/github-BOSNO3Xy.js",
+        "/assets/useProjectVisibility-BeuC89S8.js",
+        "/assets/projectVisibility-BAyU-Y1m.js",
+        "/assets/prepare-body-BIaSCLS0.js",
+        "/assets/agent-xHUMlZzI.js",
+        "/assets/stripIndents-BkVfsGRn.js",
+        "/assets/sheetNavigation-CsvZ-IVW.js",
+        "/assets/LazyLoadWrapper-BggCeXxl.js",
+        "/assets/IndexLayout-BMsa0yUk.js",
+        "/assets/meta-B8tg8P4-.js",
+        "/assets/components--wnMcVV1.js",
+        "/assets/index-DoqzyL8F.js",
+        "/assets/bundle-mjs-DU0l7zhQ.js",
+        "/assets/version-history-DynoClru.js",
+        "/assets/easings-DAxtP8tV.js",
+        "/assets/stripe-CoaAzk1j.js",
+        "/assets/sentry.client-BPviTxHE.js",
+        "/assets/request-with-auth-CbaUPwtl.js",
+        "/assets/token-CsfDPh_j.js",
+        "/assets/util-Bsdl-gKh.js",
+        "/assets/index-Cu0zN-3n.js",
+        "/assets/growthbook-DKqGPdnm.js",
+        "/assets/index-CikEqSG_.js",
+        "/assets/openWithStackblitzAuth-Q3Dxx3IW.js",
+        "/assets/formatDistanceToNow-oOLRuD1_.js",
+        "/assets/constructNow-7_LswxiF.js",
+        "/assets/init-ref-BzeFkN1M.js",
+        "/assets/ProgressBar-CCQTl69D.js",
+        "/assets/getDefaultOptions-DgmuIKx7.js",
+        "/assets/projects-vIUJfEkW.js",
+        "/assets/animationVariants-BnzZbKmg.js",
+        "/assets/LightRaysCloud.client-Ci87rrED.js",
+        "/assets/bolt-connect-BtfWVwj5.js",
+        "/assets/ai-BU0u_yw4.js",
+        "/assets/current-user-rails-client-zCJ6SXfj.js",
+        "/assets/query-QnPL2Dt9.js",
+        "/assets/mutation-ib4E7j4w.js",
+        "/assets/oauth-805WSOah.js",
+        "/assets/use-reduced-motion-DMEgiw6P.js",
+        "/assets/client-github-lYY-laFk.js",
+        "/assets/login-DA1KOztd.js",
+        "/assets/Logo-wLKSKZf8.js",
+        "/assets/resources-links-Nyk23ebw.js",
+        "/assets/BaseMenuDropdown-BL1TV8xi.js",
+        "/assets/index-COcektrn.js",
+        "/assets/compare-Br3z3FUS-B1AuoCM-.js",
+        "/assets/AccountSelector.client-CaWZZuCj.js",
+        "/assets/user-BzskR7qI.js",
+        "/assets/useActiveOrganization-V5XqVQqa.js",
+        "/assets/Sheet-D69EOZaD.js",
+        "/assets/useDashboardLayout-CcgYeV-N.js",
+        "/assets/useInitializeUserStore-ZSzt8_-l.js"
+      ],
+      "css": [
+        "/assets/mcp-oauth-listener-BH3yPH2w.css",
+        "/assets/LightRaysCloud-DqVcXTCJ.css"
+      ]
+    },
+    "routes/_chat.~.$slug": {
+      "id": "routes/_chat.~.$slug",
+      "parentId": "routes/_chat",
+      "path": "~/:slug",
+      "hasAction": false,
+      "hasLoader": true,
+      "hasClientAction": false,
+      "hasClientLoader": false,
+      "hasErrorBoundary": false,
+      "module": "/assets/_chat.~._slug-qGfqGE_p.js",
+      "imports": [
+        "/assets/jsx-runtime-BMx6HyDf.js",
+        "/assets/index-CC4vrs0o.js",
+        "/assets/client-only-DMwn8nR_.js",
+        "/assets/Chat.client-Dr5J7AKz.js",
+        "/assets/index-fX9EBmZ4.js",
+        "/assets/ProjectSearchUI-Dq-bPf4X.js",
+        "/assets/Empty-DjsY8RY4.js",
+        "/assets/react-toastify.esm-CUlot4qK.js",
+        "/assets/ToastMessage-BgYR2wrZ.js",
+        "/assets/config-B5G_1wxb.js",
+        "/assets/pricing-BNeoSz0z.js",
+        "/assets/openWithStackblitzAuth-Q3Dxx3IW.js",
+        "/assets/github-BOSNO3Xy.js",
+        "/assets/user-BzskR7qI.js",
+        "/assets/designSystemStepper-D1HmNJQY.js",
+        "/assets/constants-1BAdFFhm.js",
+        "/assets/index-CUyAm99o.js",
+        "/assets/menu-BLr4F7gp.js",
+        "/assets/meta-B8tg8P4-.js",
+        "/assets/components--wnMcVV1.js",
+        "/assets/index-DZunOd-B.js",
+        "/assets/sentry.client-BPviTxHE.js",
+        "/assets/index-B6cQHJgj.js",
+        "/assets/stripIndents-BkVfsGRn.js",
+        "/assets/mcp-oauth-listener-CXM1v-xF.js",
+        "/assets/version-history-DynoClru.js",
+        "/assets/theme-BSEH2gtj.js",
+        "/assets/invariant-DkBQM-xX.js",
+        "/assets/clsx-DXYlTy0V.js",
+        "/assets/classNames-Cmi3cVpn.js",
+        "/assets/bundle-mjs-DU0l7zhQ.js",
+        "/assets/url-Bon0Jy9_.js",
+        "/assets/agent-xHUMlZzI.js",
+        "/assets/useQuery-D8_ij-OO.js",
+        "/assets/QueryClientProvider-XBETqAlY.js",
+        "/assets/query-QnPL2Dt9.js",
+        "/assets/index-Jga8DJii.js",
+        "/assets/mutationOptions-DhmP6lBp.js",
+        "/assets/easings-DAxtP8tV.js",
+        "/assets/stripe-CoaAzk1j.js",
+        "/assets/withSpinner-Djjdubiv.js",
+        "/assets/Link-DNaYDSdo.js",
+        "/assets/organizations-DYc24SnH.js",
+        "/assets/request-with-auth-CbaUPwtl.js",
+        "/assets/token-CsfDPh_j.js",
+        "/assets/util-Bsdl-gKh.js",
+        "/assets/index-Cu0zN-3n.js",
+        "/assets/useMutation-DzMpVxu4.js",
+        "/assets/mutation-ib4E7j4w.js",
+        "/assets/Alert-C-1ZXPcI.js",
+        "/assets/organizationMembers-cM3fzas-.js",
+        "/assets/init-ref-BzeFkN1M.js",
+        "/assets/path-BFy1X2yH.js",
+        "/assets/ProgressBar-CCQTl69D.js",
+        "/assets/format-DhT03U2M.js",
+        "/assets/en-US-CcYwgU8A.js",
+        "/assets/getDefaultOptions-DgmuIKx7.js",
+        "/assets/description-8kOH7JmK.js",
+        "/assets/applicationManager-hsjw9eT9.js",
+        "/assets/login-DA1KOztd.js",
+        "/assets/LightRaysCloud.client-Ci87rrED.js",
+        "/assets/login-DKMXsI_y.js",
+        "/assets/oauth-805WSOah.js",
+        "/assets/LoadingDots-DbNm4U1r.js",
+        "/assets/teamTemplates-DXQXnEkz.js",
+        "/assets/UpgradePlanDialogs-B5_kkMWZ.js",
+        "/assets/index-DoqzyL8F.js",
+        "/assets/growthbook-DKqGPdnm.js",
+        "/assets/index-CikEqSG_.js",
+        "/assets/animationVariants-BnzZbKmg.js",
+        "/assets/AccountSelectMenu-DUoCTMTq.js",
+        "/assets/Prompt-BUhyMfEl.js",
+        "/assets/scroll-overflow-mask-FL_LyxDi.js",
+        "/assets/Sheet-D69EOZaD.js",
+        "/assets/download-DDDUyPFs.js",
+        "/assets/subscription-CP4bEvax.js",
+        "/assets/tokens-stats-BZKpBAvN.js",
+        "/assets/command-Ds6w8NxF.js",
+        "/assets/index-D6CpLd2b.js",
+        "/assets/ConnectToFigmaDialog-Dubp3fG5.js",
+        "/assets/ProjectGridSkeleton-CJ2JC_-b.js",
+        "/assets/index-COcektrn.js",
+        "/assets/compare-Br3z3FUS-B1AuoCM-.js",
+        "/assets/current-user-rails-client-zCJ6SXfj.js",
+        "/assets/use-reduced-motion-DMEgiw6P.js",
+        "/assets/useTrackOnMount-DRh3TQXp.js",
+        "/assets/isYesterday-18O9Fn7T.js",
+        "/assets/constructNow-7_LswxiF.js",
+        "/assets/addDays-_XW3niI1.js",
+        "/assets/projects-vIUJfEkW.js",
+        "/assets/DeleteChatDialogContent-DhODATeD.js",
+        "/assets/overlay-DqwW909H.js",
+        "/assets/ai-BU0u_yw4.js",
+        "/assets/useTokenRefresh-j119wHcG.js",
+        "/assets/resources-links-Nyk23ebw.js",
+        "/assets/useActiveOrganization-V5XqVQqa.js",
+        "/assets/DiscordSupportModal-CAjGDvh7.js",
+        "/assets/useProjectVisibility-BeuC89S8.js",
+        "/assets/client-github-lYY-laFk.js",
+        "/assets/Accordion-4rRhpx7K.js",
+        "/assets/utils-A9V70DHc.js",
+        "/assets/LazyLoadWrapper-BggCeXxl.js",
+        "/assets/Menu.client-CB2chHls.js",
+        "/assets/ResumeSubscriptionConfirmationModal.client-DTXD7Ktl.js",
+        "/assets/index-DFE7Qt-N.js",
+        "/assets/date-binning-DQDLuGpp.js",
+        "/assets/isThisWeek-BMo_a2QY.js",
+        "/assets/AccountSelector.client-CaWZZuCj.js",
+        "/assets/BaseMenuDropdown-BL1TV8xi.js",
+        "/assets/Logo-wLKSKZf8.js",
+        "/assets/AllProjects-Xe8VUCnI.js",
+        "/assets/useProjectsOwnerContext-BSh2EBlo.js",
+        "/assets/Pagination-MqhSTw8K.js",
+        "/assets/RecentProjects-DkcohYTs.js",
+        "/assets/useDashboardLayout-CcgYeV-N.js",
+        "/assets/detectBrowser-bP0Qsk21.js",
+        "/assets/ErrorBoundary-Bod_sFGQ.js",
+        "/assets/Header-De1DTUT3.js",
+        "/assets/projectVisibility-BAyU-Y1m.js",
+        "/assets/LightRays.client-DhCD_qXz.js",
+        "/assets/LightRaysCore-DAupZldW.js",
+        "/assets/LightRays.module-B24XLaH3.js",
+        "/assets/client-error-C4KDEDWg.js",
+        "/assets/formatDistanceToNow-oOLRuD1_.js",
+        "/assets/index-DLKhIdFm.js",
+        "/assets/index-DwiuBq9q.js",
+        "/assets/prepare-body-BIaSCLS0.js"
+      ],
+      "css": [
+        "/assets/Chat-UZczflrs.css",
+        "/assets/mcp-oauth-listener-BH3yPH2w.css",
+        "/assets/LightRaysCloud-DqVcXTCJ.css",
+        "/assets/Prompt-DIhqngLS.css",
+        "/assets/LightRays-apN2LHcc.css"
+      ]
+    },
+    "routes/_chat._index": {
+      "id": "routes/_chat._index",
+      "parentId": "routes/_chat",
+      "index": true,
+      "hasAction": false,
+      "hasLoader": false,
+      "hasClientAction": false,
+      "hasClientLoader": false,
+      "hasErrorBoundary": false,
+      "module": "/assets/_chat._index-DYkQMHt2.js",
+      "imports": [
+        "/assets/jsx-runtime-BMx6HyDf.js",
+        "/assets/index-BY7HUXap.js",
+        "/assets/client-only-DMwn8nR_.js",
+        "/assets/Chat.client-Dr5J7AKz.js",
+        "/assets/constants-1BAdFFhm.js",
+        "/assets/index-CC4vrs0o.js",
+        "/assets/components--wnMcVV1.js",
+        "/assets/index-DFE7Qt-N.js",
+        "/assets/index-D6CpLd2b.js",
+        "/assets/index-DoqzyL8F.js",
+        "/assets/index-fX9EBmZ4.js",
+        "/assets/invariant-DkBQM-xX.js",
+        "/assets/sentry.client-BPviTxHE.js",
+        "/assets/clsx-DXYlTy0V.js",
+        "/assets/react-toastify.esm-CUlot4qK.js",
+        "/assets/index-DZunOd-B.js",
+        "/assets/index-CUyAm99o.js",
+        "/assets/ai-BU0u_yw4.js",
+        "/assets/Empty-DjsY8RY4.js",
+        "/assets/bundle-mjs-DU0l7zhQ.js",
+        "/assets/ToastMessage-BgYR2wrZ.js",
+        "/assets/menu-BLr4F7gp.js",
+        "/assets/request-with-auth-CbaUPwtl.js",
+        "/assets/token-CsfDPh_j.js",
+        "/assets/current-user-rails-client-zCJ6SXfj.js",
+        "/assets/path-BFy1X2yH.js",
+        "/assets/index-Cu0zN-3n.js",
+        "/assets/util-Bsdl-gKh.js",
+        "/assets/applicationManager-hsjw9eT9.js",
+        "/assets/description-8kOH7JmK.js",
+        "/assets/index-B6cQHJgj.js",
+        "/assets/stripIndents-BkVfsGRn.js",
+        "/assets/mcp-oauth-listener-CXM1v-xF.js",
+        "/assets/version-history-DynoClru.js",
+        "/assets/theme-BSEH2gtj.js",
+        "/assets/classNames-Cmi3cVpn.js",
+        "/assets/url-Bon0Jy9_.js",
+        "/assets/agent-xHUMlZzI.js",
+        "/assets/useQuery-D8_ij-OO.js",
+        "/assets/QueryClientProvider-XBETqAlY.js",
+        "/assets/query-QnPL2Dt9.js",
+        "/assets/index-Jga8DJii.js",
+        "/assets/mutationOptions-DhmP6lBp.js",
+        "/assets/easings-DAxtP8tV.js",
+        "/assets/stripe-CoaAzk1j.js",
+        "/assets/withSpinner-Djjdubiv.js",
+        "/assets/Link-DNaYDSdo.js",
+        "/assets/pricing-BNeoSz0z.js",
+        "/assets/config-B5G_1wxb.js",
+        "/assets/organizations-DYc24SnH.js",
+        "/assets/useMutation-DzMpVxu4.js",
+        "/assets/mutation-ib4E7j4w.js",
+        "/assets/Alert-C-1ZXPcI.js",
+        "/assets/organizationMembers-cM3fzas-.js",
+        "/assets/designSystemStepper-D1HmNJQY.js",
+        "/assets/init-ref-BzeFkN1M.js",
+        "/assets/ProgressBar-CCQTl69D.js",
+        "/assets/format-DhT03U2M.js",
+        "/assets/en-US-CcYwgU8A.js",
+        "/assets/getDefaultOptions-DgmuIKx7.js",
+        "/assets/login-DA1KOztd.js",
+        "/assets/LightRaysCloud.client-Ci87rrED.js",
+        "/assets/login-DKMXsI_y.js",
+        "/assets/oauth-805WSOah.js",
+        "/assets/LoadingDots-DbNm4U1r.js",
+        "/assets/teamTemplates-DXQXnEkz.js",
+        "/assets/UpgradePlanDialogs-B5_kkMWZ.js",
+        "/assets/growthbook-DKqGPdnm.js",
+        "/assets/index-CikEqSG_.js",
+        "/assets/openWithStackblitzAuth-Q3Dxx3IW.js",
+        "/assets/animationVariants-BnzZbKmg.js",
+        "/assets/AccountSelectMenu-DUoCTMTq.js",
+        "/assets/Prompt-BUhyMfEl.js",
+        "/assets/scroll-overflow-mask-FL_LyxDi.js",
+        "/assets/Sheet-D69EOZaD.js",
+        "/assets/download-DDDUyPFs.js",
+        "/assets/subscription-CP4bEvax.js",
+        "/assets/tokens-stats-BZKpBAvN.js",
+        "/assets/command-Ds6w8NxF.js",
+        "/assets/ConnectToFigmaDialog-Dubp3fG5.js",
+        "/assets/ProjectGridSkeleton-CJ2JC_-b.js",
+        "/assets/index-COcektrn.js",
+        "/assets/compare-Br3z3FUS-B1AuoCM-.js",
+        "/assets/use-reduced-motion-DMEgiw6P.js",
+        "/assets/useTrackOnMount-DRh3TQXp.js",
+        "/assets/isYesterday-18O9Fn7T.js",
+        "/assets/constructNow-7_LswxiF.js",
+        "/assets/addDays-_XW3niI1.js",
+        "/assets/projects-vIUJfEkW.js",
+        "/assets/DeleteChatDialogContent-DhODATeD.js",
+        "/assets/github-BOSNO3Xy.js",
+        "/assets/client-github-lYY-laFk.js",
+        "/assets/overlay-DqwW909H.js",
+        "/assets/useTokenRefresh-j119wHcG.js",
+        "/assets/resources-links-Nyk23ebw.js",
+        "/assets/user-BzskR7qI.js",
+        "/assets/useActiveOrganization-V5XqVQqa.js",
+        "/assets/DiscordSupportModal-CAjGDvh7.js",
+        "/assets/useProjectVisibility-BeuC89S8.js",
+        "/assets/Accordion-4rRhpx7K.js",
+        "/assets/utils-A9V70DHc.js",
+        "/assets/LazyLoadWrapper-BggCeXxl.js",
+        "/assets/Menu.client-CB2chHls.js",
+        "/assets/ResumeSubscriptionConfirmationModal.client-DTXD7Ktl.js",
+        "/assets/date-binning-DQDLuGpp.js",
+        "/assets/isThisWeek-BMo_a2QY.js",
+        "/assets/AccountSelector.client-CaWZZuCj.js",
+        "/assets/BaseMenuDropdown-BL1TV8xi.js",
+        "/assets/Logo-wLKSKZf8.js",
+        "/assets/AllProjects-Xe8VUCnI.js",
+        "/assets/useProjectsOwnerContext-BSh2EBlo.js",
+        "/assets/Pagination-MqhSTw8K.js",
+        "/assets/RecentProjects-DkcohYTs.js",
+        "/assets/useDashboardLayout-CcgYeV-N.js",
+        "/assets/detectBrowser-bP0Qsk21.js",
+        "/assets/ErrorBoundary-Bod_sFGQ.js",
+        "/assets/Header-De1DTUT3.js",
+        "/assets/projectVisibility-BAyU-Y1m.js",
+        "/assets/LightRays.client-DhCD_qXz.js",
+        "/assets/LightRaysCore-DAupZldW.js",
+        "/assets/LightRays.module-B24XLaH3.js",
+        "/assets/client-error-C4KDEDWg.js",
+        "/assets/formatDistanceToNow-oOLRuD1_.js",
+        "/assets/index-DLKhIdFm.js",
+        "/assets/ProjectSearchUI-Dq-bPf4X.js",
+        "/assets/index-DwiuBq9q.js",
+        "/assets/prepare-body-BIaSCLS0.js"
+      ],
+      "css": [
+        "/assets/Chat-UZczflrs.css",
+        "/assets/mcp-oauth-listener-BH3yPH2w.css",
+        "/assets/LightRaysCloud-DqVcXTCJ.css",
+        "/assets/Prompt-DIhqngLS.css",
+        "/assets/LightRays-apN2LHcc.css"
+      ]
+    },
+    "routes/$slug": {
+      "id": "routes/$slug",
+      "parentId": "root",
+      "path": ":slug",
+      "hasAction": false,
+      "hasLoader": true,
+      "hasClientAction": false,
+      "hasClientLoader": false,
+      "hasErrorBoundary": false,
+      "module": "/assets/_slug-BLmXbGQM.js",
+      "imports": [],
+      "css": []
+    }
+  },
+  "url": "/assets/manifest-388d7ca2.js",
+  "version": "388d7ca2"
+};
+window.__remixRouteModules = {"root":route0,"routes/_chat":route1,"routes/_chat.~.$slug":route2};
+
+import("/assets/entry.client-DcQiOz7k.js");</script></body></html><!--$--><script>window.__remixContext.streamController.enqueue("[{\"_1\":2,\"_442\":-5,\"_443\":-5},\"loaderData\",{\"_3\":4,\"_287\":288,\"_415\":416},\"root\",{\"_5\":-7,\"_6\":7,\"_181\":182,\"_278\":279,\"_280\":281,\"_93\":282,\"_283\":284,\"_285\":286},\"banner\",\"growthbookPayload\",{\"_8\":9,\"_10\":11,\"_177\":178,\"_179\":180},\"status\",200,\"features\",{\"_12\":13,\"_16\":17,\"_18\":19,\"_59\":60,\"_82\":83,\"_85\":86,\"_110\":111,\"_138\":139,\"_157\":158},\"insta-teams\",{\"_14\":15},\"defaultValue\",false,\"team-aware-switcher\",{\"_14\":15},\"default-model-override\",{\"_14\":20,\"_21\":22},\"claude-sonnet-4-5-20250929\",\"rules\",[23],{\"_24\":25,\"_26\":27,\"_30\":31,\"_32\":33,\"_34\":35,\"_36\":37,\"_38\":39,\"_43\":44,\"_48\":49,\"_50\":51,\"_58\":53},\"id\",\"fr_19g6smo1ufpsx\",\"condition\",{\"_28\":29},\"isPaid\",true,\"coverage\",1,\"hashAttribute\",\"email\",\"seed\",\"32e7ea9d-4942-4c54-9ae3-898c491c8d76\",\"hashVersion\",2,\"variations\",[40,41,42],\"claude-sonnet-4-6\",\"claude-opus-4-6\",\"claude-opus-4-7\",\"weights\",[45,46,47],0,0.75,0.25,\"key\",\"default-model-override-all-users\",\"meta\",[52,54,56],{\"_48\":53},\"0\",{\"_48\":55},\"1\",{\"_48\":57},\"2\",\"phase\",\"plan-mode-enable\",{\"_14\":15,\"_21\":61},[62],{\"_24\":63,\"_26\":64,\"_30\":31,\"_32\":33,\"_69\":31,\"_70\":71,\"_34\":74,\"_36\":37,\"_38\":75,\"_43\":76,\"_48\":78,\"_50\":79,\"_58\":53},\"fr_19g6smnqjjhan\",{\"_65\":66,\"_28\":15},\"createdAt\",{\"_67\":68},\"$gt\",\"2026-04-15T10:30\",\"bucketVersion\",\"namespace\",[72,73,31],\"ns-19g6smm9ksjuu\",0.8,\"6f813318-42fd-4077-87cb-5f1a9c6e9d1f\",[15,29],[77,77],0.5,\"plan-mode-enabled-first-prompt\",[80,81],{\"_48\":53},{\"_48\":55},\"free-tier-experiment-group\",{\"_14\":84},\"OFF\",\"free-trial-popup\",{\"_14\":84,\"_21\":87},[88],{\"_24\":89,\"_26\":90,\"_30\":31,\"_32\":33,\"_69\":31,\"_70\":95,\"_34\":97,\"_36\":37,\"_38\":98,\"_43\":102,\"_48\":103,\"_50\":104,\"_58\":53},\"fr_19g6smnyyo2z4\",{\"_65\":91,\"_93\":94,\"_28\":15},{\"_67\":92},\"2026-04-15T10:00\",\"country\",\"US\",[72,45,96],0.2,\"e81d837b-120f-4c16-8445-2d4f1fadd60f\",[84,99,100,101],\"FREE_TRIAL\",\"COUPON_25\",\"COUPON_50\",[47,47,47,47],\"free-users_promotions_us-only\",[105,106,107,108],{\"_48\":53},{\"_48\":55},{\"_48\":57},{\"_48\":109},\"3\",\"free-tier-first-prompt-model\",{\"_14\":40,\"_21\":112},[113],{\"_24\":114,\"_26\":115,\"_30\":31,\"_32\":33,\"_70\":116,\"_34\":118,\"_36\":37,\"_38\":119,\"_43\":121,\"_48\":124,\"_50\":125,\"_58\":53},\"fr_19g6smo7ig5e7\",{\"_28\":15},[72,117,73],0.3,\"21c92a2c-5378-4b59-a815-ef84502b8d0a\",[40,40,40,40,40,40,120,120],\"zai-org/GLM-5\",[122,123,123,122,122,122,122,122],0.15,0.05,\"free-user-config\",[126,127,128,129,130,132,134,136],{\"_48\":53},{\"_48\":55},{\"_48\":57},{\"_48\":109},{\"_48\":131},\"4\",{\"_48\":133},\"5\",{\"_48\":135},\"6\",{\"_48\":137},\"7\",\"free-tier-follow-up-model\",{\"_14\":140,\"_21\":141},\"claude-haiku-4-5-20251001\",[142],{\"_24\":143,\"_26\":144,\"_30\":31,\"_32\":33,\"_70\":145,\"_34\":118,\"_36\":37,\"_38\":146,\"_43\":147,\"_48\":124,\"_50\":148,\"_58\":53},\"fr_19g6smo7ii7fx\",{\"_28\":15},[72,117,73],[140,40,40,120,120,120,120,120],[122,123,123,122,122,122,122,122],[149,150,151,152,153,154,155,156],{\"_48\":53},{\"_48\":55},{\"_48\":57},{\"_48\":109},{\"_48\":131},{\"_48\":133},{\"_48\":135},{\"_48\":137},\"free-tier-min-messages-per-day\",{\"_14\":45,\"_21\":159},[160],{\"_24\":161,\"_26\":162,\"_30\":31,\"_32\":33,\"_70\":163,\"_34\":118,\"_36\":37,\"_38\":164,\"_43\":167,\"_48\":124,\"_50\":168,\"_58\":53},\"fr_19g6smo7ij33k\",{\"_28\":15},[72,117,73],[45,165,166,45,165,166,165,166],3,5,[122,123,123,122,122,122,122,122],[169,170,171,172,173,174,175,176],{\"_48\":53},{\"_48\":55},{\"_48\":57},{\"_48\":109},{\"_48\":131},{\"_48\":133},{\"_48\":135},{\"_48\":137},\"experiments\",[],\"dateUpdated\",\"2026-04-20T20:00:53.056Z\",\"user\",{\"_183\":184,\"_185\":-5,\"_186\":15,\"_187\":29,\"_188\":-5,\"_65\":189,\"_33\":190,\"_191\":192,\"_193\":194,\"_200\":201,\"_208\":209,\"_237\":-5,\"_24\":238,\"_239\":240,\"_241\":-5,\"_242\":-5,\"_243\":45,\"_244\":190,\"_245\":45,\"_246\":247,\"_251\":252,\"_253\":-5,\"_254\":15,\"_255\":-5,\"_256\":15,\"_257\":258,\"_259\":260,\"_195\":261,\"_262\":-5,\"_263\":-5,\"_264\":265,\"_266\":267,\"_268\":-5,\"_269\":270,\"_272\":273},\"avatar\",\"https://avatars.githubusercontent.com/u/83971549\",\"bio\",\"canPurchaseDomain\",\"canSubscribe\",\"churnkeyAuthKey\",\"2026-04-20T20:25:55.681Z\",\"broowho21@gmail.com\",\"expirableBoltTokenPurchases\",[],\"externalAccount\",{\"_195\":196,\"_197\":198,\"_199\":15},\"username\",\"KestralDex\",\"url\",\"https://github.com//KestralDex\",\"needsReauthorization\",\"externalAccounts\",[202,206],{\"_203\":204,\"_195\":196,\"_205\":198,\"_199\":15},\"provider\",\"github\",\"uri\",{\"_203\":207,\"_195\":-5,\"_205\":-5,\"_199\":15},\"google\",\"featureFlags\",{\"_210\":29,\"_211\":15,\"_212\":15,\"_213\":15,\"_214\":15,\"_215\":15,\"_216\":15,\"_217\":15,\"_218\":29,\"_219\":29,\"_220\":15,\"_221\":15,\"_222\":29,\"_223\":15,\"_224\":29,\"_225\":15,\"_226\":29,\"_227\":15,\"_228\":29,\"_229\":15,\"_230\":-7,\"_231\":15,\"_232\":15,\"_233\":29,\"_234\":29,\"_235\":15,\"_236\":15},\"experimentalNode\",\"previewTunneling\",\"hackathon\",\"boltGithubApp\",\"debugger\",\"providerBedrock\",\"customWebSearch\",\"browserTools\",\"figmaFrameImport\",\"teamTemplates\",\"importURL\",\"userSkills\",\"mcpServers\",\"jiraIntegration\",\"agentImageGeneration\",\"projectCollaboration\",\"collaborationV2\",\"projectsDashboard\",\"designSystems\",\"tokenLedgerNoMigration\",\"teamsSetupRedesign\",\"usageBasedBilling\",\"ossModels\",\"sentimentCapture\",\"blockNewV1Projects\",\"tokenLedger\",\"codeStorage\",\"githubAppInstallation\",\"9863794\",\"kind\",\"USER\",\"location\",\"membership\",\"membershipLevel\",\"name\",\"nextMembershipLevel\",\"onboardingSurveyResponse\",{\"_8\":248,\"_249\":250},\"finished\",\"surveyVersion\",\"2026-03-16_work_emails\",\"roles\",[],\"site\",\"ssoRestricted\",\"stripeCustomerId\",\"teamsPlan\",\"tokenAllocations\",[],\"totalBoltTokenPurchases\",1000000,\"broowho21\",\"wcAPIMembership\",\"wcAPIStripeAccount\",\"organizations\",[],\"organizationInvites\",[],\"activeOrganizationId\",\"surveys\",{\"_271\":248},\"onboarding\",\"settings\",{\"_274\":275},\"featurePreviews\",{\"_276\":15,\"_277\":15},\"reasoning\",\"imageGeneration\",\"token\",\"V_pyjOQRE3c45U_Eah0jkAF697cn8qmt7WsloOvmgro\",\"serverTime\",\"2026-04-20T20:32:23.328Z\",\"IN\",\"swk\",\"ta1kDK49qdEDEfd8KYxI37mW0GPkLKn1\",\"gbk\",\"sdk-ye5YC6vB6I5SoRX\",\"routes/_chat\",{\"_181\":289,\"_304\":305,\"_352\":353},{\"_183\":184,\"_185\":-5,\"_186\":15,\"_187\":29,\"_188\":-5,\"_65\":189,\"_33\":190,\"_191\":290,\"_193\":291,\"_200\":292,\"_208\":295,\"_237\":-5,\"_24\":238,\"_239\":240,\"_241\":-5,\"_242\":-5,\"_243\":45,\"_244\":190,\"_245\":45,\"_246\":296,\"_251\":297,\"_253\":-5,\"_254\":15,\"_255\":-5,\"_256\":15,\"_257\":298,\"_259\":260,\"_195\":261,\"_262\":-5,\"_263\":-5,\"_264\":299,\"_266\":300,\"_268\":-5,\"_269\":301,\"_272\":302},[],{\"_195\":196,\"_197\":198,\"_199\":15},[293,294],{\"_203\":204,\"_195\":196,\"_205\":198,\"_199\":15},{\"_203\":207,\"_195\":-5,\"_205\":-5,\"_199\":15},{\"_210\":29,\"_211\":15,\"_212\":15,\"_213\":15,\"_214\":15,\"_215\":15,\"_216\":15,\"_217\":15,\"_218\":29,\"_219\":29,\"_220\":15,\"_221\":15,\"_222\":29,\"_223\":15,\"_224\":29,\"_225\":15,\"_226\":29,\"_227\":15,\"_228\":29,\"_229\":15,\"_231\":15,\"_232\":15,\"_233\":29,\"_234\":29,\"_235\":15,\"_236\":15},{\"_8\":248,\"_249\":250},[],[],[],[],{\"_271\":248},{\"_274\":303},{\"_276\":15,\"_277\":15},\"tokenStats\",{\"_306\":-5,\"_307\":308,\"_309\":260,\"_310\":311,\"_315\":316,\"_322\":323,\"_324\":325,\"_326\":327,\"_335\":336,\"_337\":338,\"_339\":314,\"_340\":314,\"_341\":45,\"_342\":45,\"_343\":344,\"_350\":351},\"billingPeriod\",\"maxPerDay\",300000,\"maxPerMonth\",\"regularTokens\",{\"_312\":260,\"_313\":314},\"available\",\"used\",190052,\"regularTokenBreakdown\",[317],{\"_318\":319,\"_312\":260,\"_313\":314,\"_320\":321},\"expiresOn\",1777593599999,\"type\",\"active-month\",\"rewardTokens\",{\"_313\":45,\"_312\":45},\"rewardTokenBreakdown\",[],\"nextTier\",{\"_328\":31,\"_329\":330,\"_320\":334},\"level\",\"limits\",{\"_331\":332,\"_333\":332},\"perDay\",10000000,\"perMonth\",\"pro\",\"overflow\",{\"_312\":260,\"_313\":45},\"purchased\",{\"_312\":260,\"_313\":45},\"totalThisMonth\",\"totalToday\",\"totalThisMonthSonnet46\",\"totalTodaySonnet46\",\"referralTokens\",{\"_345\":346,\"_348\":349},\"free\",{\"_312\":45,\"_347\":45,\"_313\":45},\"rewardCount\",\"paid\",{\"_312\":45,\"_347\":45,\"_313\":45},\"specialTokens\",{\"_312\":45,\"_313\":45},\"publicDesignSystems\",[354,369,378,387,397,406],{\"_24\":355,\"_244\":356,\"_357\":358,\"_359\":360},\"e560d0e7-4fba-4857-a197-a03f50115e72\",\"Chakra\",\"logoUrl\",\"/api/design-systems/e560d0e7-4fba-4857-a197-a03f50115e72/files/logo.webp\",\"publicMetadata\",{\"_320\":361,\"_362\":363},\"open-source\",\"prompts\",[364],{\"_365\":366,\"_367\":368},\"text\",\"Build a movie streaming web app\",\"replayId\",\"abe042b0-1514-4f5f-999c-47611556dd5a\",{\"_24\":370,\"_244\":371,\"_357\":372,\"_359\":373},\"c780062a-25f0-4a60-bdaf-c5b27da476fb\",\"Material UI\",\"/api/design-systems/c780062a-25f0-4a60-bdaf-c5b27da476fb/files/logo.webp\",{\"_320\":361,\"_362\":374},[375],{\"_365\":376,\"_367\":377},\"Build a Google Drive dashboard\",\"cf113b81-bbe3-4168-b53f-7fa2696bceeb\",{\"_24\":379,\"_244\":380,\"_357\":381,\"_359\":382},\"24db67f1-2979-4ee4-8881-1cf620ecf1e9\",\"Shadcn\",\"/api/design-systems/24db67f1-2979-4ee4-8881-1cf620ecf1e9/files/logo.webp\",{\"_320\":361,\"_362\":383},[384],{\"_365\":385,\"_367\":386},\"Build an appointment booking landing page\",\"eb619f11-6227-41d2-a63e-f34d2f723546\",{\"_24\":388,\"_244\":389,\"_357\":390,\"_359\":391},\"8c0d5ecc-f2f4-486d-baee-8d50d61280ea\",\"Washington Post\",\"/api/design-systems/8c0d5ecc-f2f4-486d-baee-8d50d61280ea/files/logo.webp\",{\"_320\":392,\"_362\":393},\"corporate\",[394],{\"_365\":395,\"_367\":396},\"Build a news blog\",\"2f69f91d-24f2-452b-8619-f8a4c29d1889\",{\"_24\":398,\"_244\":399,\"_357\":400,\"_359\":401},\"c2cae65c-e390-4bba-989e-4ddf6f0be5ca\",\"AWS Cloudscape\",\"/api/design-systems/c2cae65c-e390-4bba-989e-4ddf6f0be5ca/files/logo.webp\",{\"_320\":392,\"_362\":402},[403],{\"_365\":404,\"_367\":405},\"Build a management dashboard for a database service\",\"a63d181f-7693-4862-b1c8-ad8f7244c7bb\",{\"_24\":407,\"_244\":408,\"_357\":409,\"_359\":410},\"96de9aa8-2543-4658-aef6-abda7df52e2f\",\"Porsche\",\"/api/design-systems/96de9aa8-2543-4658-aef6-abda7df52e2f/files/logo.webp\",{\"_320\":392,\"_362\":411},[412],{\"_365\":413,\"_367\":414},\"Build a landing page for the Porsche GT3 RS\",\"68fab858-6204-4f09-99b9-8371d504df2e\",\"routes/_chat.~.$slug\",{\"_204\":417,\"_432\":433,\"_434\":435,\"_226\":29,\"_436\":437,\"_441\":-5},{\"_418\":29,\"_419\":420},\"linked\",\"data\",{\"_421\":422,\"_426\":427,\"_428\":29,\"_429\":430,\"_320\":204,\"_431\":29},\"repository\",{\"_423\":196,\"_244\":424,\"_24\":425},\"owner\",\"Student-Attendence-\",\"R_kgDOSH8nVw\",\"branchName\",\"main\",\"initialized\",\"lastSyncedOid\",\"893ce22c00cbef2b98b5c9b7fb135c18c951d142\",\"skipInitialPull\",\"slug\",\"github-gjkwz1tv\",\"projectId\",\"65892722\",\"projectInfo\",{\"_438\":-5,\"_24\":435,\"_432\":433,\"_439\":440},\"description\",\"title\",\"KestralDex/Student-Attendence- (imported from GitHub)\",\"chatModel\",\"actionData\",\"errors\"]\n");</script><!--$--><script>window.__remixContext.streamController.close();</script><!--/$--><!--/$-->
