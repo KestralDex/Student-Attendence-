@@ -13,13 +13,32 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { FieldGroup, Field, FieldLabel } from "@/components/ui/field"
-import { Empty } from "@/components/ui/empty"
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription } from "@/components/ui/empty"
 import { Download, FileSpreadsheet, Loader2, BookOpen } from "lucide-react"
 
 interface Subject {
   id: string
   name: string
   year: string
+}
+
+interface StudentInfo {
+  name: string
+  roll_no: string
+  email: string
+  year: string
+}
+
+interface AttendanceRow {
+  session_date: string
+  status: string
+  scanned_at: string | null
+  students: StudentInfo | StudentInfo[] | null
+}
+
+function normalizeStudent(students: StudentInfo | StudentInfo[] | null): StudentInfo | null {
+  if (!students) return null
+  return Array.isArray(students) ? (students[0] ?? null) : students
 }
 
 export function ExportClient({ subjects }: { subjects: Subject[] }) {
@@ -34,7 +53,7 @@ export function ExportClient({ subjects }: { subjects: Subject[] }) {
 
     const supabase = createClient()
 
-    const { data: records, error } = await supabase
+    const { data: rawRecords, error } = await supabase
       .from("attendance_records")
       .select(`
         session_date,
@@ -47,11 +66,16 @@ export function ExportClient({ subjects }: { subjects: Subject[] }) {
       .lte("session_date", endDate)
       .order("session_date", { ascending: true })
 
-    if (error || !records) {
+    if (error || !rawRecords) {
       console.error("Export error:", error)
       setLoading(false)
       return
     }
+
+    const records = (rawRecords as AttendanceRow[]).map((r) => ({
+      ...r,
+      students: normalizeStudent(r.students),
+    }))
 
     // Generate CSV
     const subject = subjects.find((s) => s.id === selectedSubject)
@@ -85,11 +109,13 @@ export function ExportClient({ subjects }: { subjects: Subject[] }) {
     return (
       <Card>
         <CardContent className="py-10">
-          <Empty
-            icon={BookOpen}
-            title="No subjects available"
-            description="Add subjects first to export attendance data"
-          />
+          <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon"><BookOpen /></EmptyMedia>
+          <EmptyTitle>No subjects available</EmptyTitle>
+          <EmptyDescription>Add subjects first to export attendance data</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
         </CardContent>
       </Card>
     )

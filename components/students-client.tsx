@@ -31,7 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { FieldGroup, Field, FieldLabel } from "@/components/ui/field"
-import { Empty } from "@/components/ui/empty"
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription } from "@/components/ui/empty"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Trash2, Users, Loader2, QrCode, Upload, Download, FileSpreadsheet } from "lucide-react"
 import { useRef } from "react"
@@ -196,11 +196,13 @@ export function StudentsClient({
     return (
       <Card>
         <CardContent className="py-10">
-          <Empty
-            icon={Users}
-            title="No subjects assigned"
-            description="Add subjects first to see students for those year groups"
-          />
+          <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon"><Users /></EmptyMedia>
+          <EmptyTitle>No subjects assigned</EmptyTitle>
+          <EmptyDescription>Add subjects first to see students for those year groups</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
         </CardContent>
       </Card>
     )
@@ -406,11 +408,13 @@ export function StudentsClient({
         </CardHeader>
         <CardContent>
           {filteredStudents.length === 0 ? (
-            <Empty
-              icon={Users}
-              title="No students found"
-              description="Add students to start tracking attendance"
-            />
+            <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon"><Users /></EmptyMedia>
+          <EmptyTitle>No students found</EmptyTitle>
+          <EmptyDescription>Add students to start tracking attendance</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
           ) : (
             <div className="rounded-md border">
               <Table>

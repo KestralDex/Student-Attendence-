@@ -13,9 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { FieldGroup, Field, FieldLabel } from "@/components/ui/field"
-import { Empty } from "@/components/ui/empty"
-import { Download, FileSpreadsheet, Loader2, BookOpen, ArrowUpRight } from "lucide-react"
-import { useToast } from "@/components/ui/use-toast"
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription } from "@/components/ui/empty"
+import { Download, FileSpreadsheet, Loader2, BookOpen } from "lucide-react"
 
 interface Subject {
   id: string
@@ -23,17 +22,38 @@ interface Subject {
   year: string
 }
 
+interface StudentInfo {
+  name: string
+  roll_no: string
+  email: string
+  year: string
+}
+
+interface AttendanceRow {
+  session_date: string
+  status: string
+  scanned_at: string | null
+  students: StudentInfo | StudentInfo[] | null
+}
+
+function normalizeStudent(students: StudentInfo | StudentInfo[] | null): StudentInfo | null {
+  if (!students) return null
+  return Array.isArray(students) ? (students[0] ?? null) : students
+}
+
 export function ExportClient({ subjects }: { subjects: Subject[] }) {
   const [selectedSubject, setSelectedSubject] = useState("")
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
   const [loading, setLoading] = useState(false)
-  const [n8nLoading, setN8nLoading] = useState(false)
-  const { toast } = useToast()
 
-  const fetchAttendanceRecords = async (subjectId: string, startDate: string, endDate: string) => {
+  const handleExport = async () => {
+    if (!selectedSubject || !startDate || !endDate) return
+    setLoading(true)
+
     const supabase = createClient()
-    const { data: records, error } = await supabase
+
+    const { data: rawRecords, error } = await supabase
       .from("attendance_records")
       .select(`
         session_date,
@@ -41,37 +61,26 @@ export function ExportClient({ subjects }: { subjects: Subject[] }) {
         scanned_at,
         students (name, roll_no, email, year)
       `)
-      .eq("subject_id", subjectId)
+      .eq("subject_id", selectedSubject)
       .gte("session_date", startDate)
       .lte("session_date", endDate)
       .order("session_date", { ascending: true })
 
-    if (error || !records) {
-      toast({
-        title: "Export failed",
-        description: error?.message || "Failed to fetch records",
-        variant: "destructive",
-      })
-      return null
-    }
-
-    return records
-  }
-
-  const handleExport = async () => {
-    if (!selectedSubject || !startDate || !endDate) return
-    setLoading(true)
-
-    const records = await fetchAttendanceRecords(selectedSubject, startDate, endDate)
-    if (!records) {
+    if (error || !rawRecords) {
+      console.error("Export error:", error)
       setLoading(false)
       return
     }
 
+    const records = (rawRecords as AttendanceRow[]).map((r) => ({
+      ...r,
+      students: normalizeStudent(r.students),
+    }))
+
     // Generate CSV
     const subject = subjects.find((s) => s.id === selectedSubject)
     const headers = ["Date", "Student Name", "Roll No", "Email", "Year", "Status", "Scanned At"]
-    const rows = records.map((record: any) => [
+    const rows = records.map((record) => [
       record.session_date,
       record.students?.name || "",
       record.students?.roll_no || "",
@@ -96,66 +105,17 @@ export function ExportClient({ subjects }: { subjects: Subject[] }) {
     setLoading(false)
   }
 
-  const handleN8nExport = async () => {
-    if (!selectedSubject || !startDate || !endDate) return
-    setN8nLoading(true)
-
-    const records = await fetchAttendanceRecords(selectedSubject, startDate, endDate)
-    if (!records) {
-      setN8nLoading(false)
-      return
-    }
-
-    try {
-      const subject = subjects.find((s) => s.id === selectedSubject)
-      const payload = {
-        subject: subject?.name || "Unknown",
-        dateRange: { start: startDate, end: endDate },
-        records: records.map((record) => ({
-          session_date: record.session_date,
-          student_name: record.students?.name || "",
-          roll_no: record.students?.roll_no || "",
-          email: record.students?.email || "",
-          year: record.students?.year || "",
-          status: record.status,
-          scanned_at: record.scanned_at ? new Date(record.scanned_at).toLocaleString() : null,
-        })),
-      }
-
-      const response = await fetch("https://shete1319.app.n8n.cloud/webhook-test/76664403-3b71-4a00-91d9-ae89debfaee3", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
-
-      if (response.ok) {
-        uiToast({
-          title: "Success",
-          description: "Data sent to n8n successfully",
-        })
-      } else {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-      }
-    } catch (err) {
-      uiToast({
-        title: "n8n Export failed",
-        description: err instanceof Error ? err.message : "Failed to send to n8n",
-        variant: "destructive",
-      })
-    } finally {
-      setN8nLoading(false)
-    }
-  }
-
   if (subjects.length === 0) {
     return (
       <Card>
         <CardContent className="py-10">
-          <Empty
-            icon={BookOpen}
-            title="No subjects available"
-            description="Add subjects first to export attendance data"
-          />
+          <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon"><BookOpen /></EmptyMedia>
+          <EmptyTitle>No subjects available</EmptyTitle>
+          <EmptyDescription>Add subjects first to export attendance data</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
         </CardContent>
       </Card>
     )
@@ -208,33 +168,18 @@ export function ExportClient({ subjects }: { subjects: Subject[] }) {
             </Field>
           </FieldGroup>
 
-          <div className="flex flex-col sm:flex-row gap-3 mt-6">
-            <Button
-              className="flex-1"
-              onClick={handleExport}
-              disabled={loading || !selectedSubject || !startDate || !endDate}
-            >
-              {loading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Download className="mr-2 h-4 w-4" />
-              )}
-              Export to CSV
-            </Button>
-            <Button
-              className="flex-1"
-              variant="outline"
-              onClick={handleN8nExport}
-              disabled={n8nLoading || !selectedSubject || !startDate || !endDate}
-            >
-              {n8nLoading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <ArrowUpRight className="mr-2 h-4 w-4" />
-              )}
-              Export to n8n
-            </Button>
-          </div>
+          <Button
+            className="w-full mt-6"
+            onClick={handleExport}
+            disabled={loading || !selectedSubject || !startDate || !endDate}
+          >
+            {loading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="mr-2 h-4 w-4" />
+            )}
+            Export to CSV
+          </Button>
         </CardContent>
       </Card>
 

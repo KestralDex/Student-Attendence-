@@ -31,20 +31,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { FieldGroup, Field, FieldLabel } from "@/components/ui/field"
-import { Empty } from "@/components/ui/empty"
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription } from "@/components/ui/empty"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Trash2, Users, Loader2, QrCode, Upload, Download, FileSpreadsheet, RefreshCw } from "lucide-react"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { useToast } from "@/components/ui/use-toast"
+import { Plus, Trash2, Users, Loader2, QrCode, Upload, Download, FileSpreadsheet } from "lucide-react"
 import { useRef } from "react"
 
 interface Student {
@@ -90,41 +79,10 @@ export function StudentsClient({
   const [importLoading, setImportLoading] = useState(false)
   const [importResults, setImportResults] = useState<{ success: number; failed: number; errors: string[] } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [restartOpen, setRestartOpen] = useState(false)
-  const [restartLoading, setRestartLoading] = useState(false)
-  const { toast } = useToast()
 
   const filteredStudents = filterYear === "all" 
     ? students 
     : students.filter(s => s.year === filterYear)
-
-  const today = new Date().toISOString().split('T')[0]
-  
-  const handleRestartAttendance = async () => {
-    setRestartLoading(true)
-    const supabase = createClient()
-    
-    const { error } = await supabase
-      .from('attendance_records')
-      .delete()
-      .eq('session_date', today)
-
-    if (error) {
-      toast({
-        title: "Restart failed",
-        description: error.message,
-        variant: "destructive",
-      })
-    } else {
-      toast({
-        title: "Attendance restarted",
-        description: "Today's attendance records cleared.",
-      })
-    }
-    setRestartLoading(false)
-    setRestartOpen(false)
-    router.refresh()
-  }
 
   const handleAddStudent = async () => {
     if (!name || !rollNo || !year) return
@@ -238,11 +196,13 @@ export function StudentsClient({
     return (
       <Card>
         <CardContent className="py-10">
-          <Empty
-            icon={Users}
-            title="No subjects assigned"
-            description="Add subjects first to see students for those year groups"
-          />
+          <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon"><Users /></EmptyMedia>
+          <EmptyTitle>No subjects assigned</EmptyTitle>
+          <EmptyDescription>Add subjects first to see students for those year groups</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
         </CardContent>
       </Card>
     )
@@ -251,45 +211,19 @@ export function StudentsClient({
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row gap-4 justify-between">
-        <div className="flex items-center gap-2">
-          <Select value={filterYear} onValueChange={setFilterYear}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Filter by year" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Years</SelectItem>
-              {years.map((y) => (
-                <SelectItem key={y} value={y}>
-                  {yearLabels[y]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <AlertDialog open={restartOpen} onOpenChange={setRestartOpen}>
-            <AlertDialogTrigger asChild>
-              <Button variant="outline" size="sm">
-                <RefreshCw className="h-4 w-4 mr-1" />
-                Restart Today&apos;s Attendance
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Restart Attendance?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This will delete all attendance records for today ({today}). This action cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleRestartAttendance} disabled={restartLoading}>
-                  {restartLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-                  Restart
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
+        <Select value={filterYear} onValueChange={setFilterYear}>
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="Filter by year" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Years</SelectItem>
+            {years.map((y) => (
+              <SelectItem key={y} value={y}>
+                {yearLabels[y]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
         <Dialog open={importDialogOpen} onOpenChange={(open) => {
           setImportDialogOpen(open)
@@ -474,11 +408,13 @@ export function StudentsClient({
         </CardHeader>
         <CardContent>
           {filteredStudents.length === 0 ? (
-            <Empty
-              icon={Users}
-              title="No students found"
-              description="Add students to start tracking attendance"
-            />
+            <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon"><Users /></EmptyMedia>
+          <EmptyTitle>No students found</EmptyTitle>
+          <EmptyDescription>Add students to start tracking attendance</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
           ) : (
             <div className="rounded-md border">
               <Table>

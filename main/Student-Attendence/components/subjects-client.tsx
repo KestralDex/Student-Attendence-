@@ -31,7 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { FieldGroup, Field, FieldLabel } from "@/components/ui/field"
-import { Empty } from "@/components/ui/empty"
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription } from "@/components/ui/empty"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Trash2, BookOpen, Loader2 } from "lucide-react"
 
@@ -162,11 +162,13 @@ export function SubjectsClient({
         </CardHeader>
         <CardContent>
           {subjects.length === 0 ? (
-            <Empty
-              icon={BookOpen}
-              title="No subjects yet"
-              description="Add your first subject to start tracking attendance"
-            />
+            <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon"><BookOpen /></EmptyMedia>
+          <EmptyTitle>No subjects yet</EmptyTitle>
+          <EmptyDescription>Add your first subject to start tracking attendance</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
           ) : (
             <div className="rounded-md border">
               <Table>

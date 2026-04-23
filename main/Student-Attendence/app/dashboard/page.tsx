@@ -3,6 +3,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { BookOpen, Users, CheckCircle, Clock } from "lucide-react"
 import { RecentAttendanceTable } from "@/components/recent-attendance-table"
 
+interface AttendanceRecord {
+  id: string
+  status: string
+  session_date: string
+  scanned_at: string | null
+  students: { name: string; roll_no: string } | null
+  subjects: { name: string } | null
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -29,7 +38,7 @@ export default async function DashboardPage() {
 
   // Get today's attendance stats
   const today = new Date().toISOString().split("T")[0]
-  
+
   const { count: presentToday } = await supabase
     .from("attendance_records")
     .select("*", { count: "exact", head: true })
@@ -44,7 +53,7 @@ export default async function DashboardPage() {
     .eq("session_date", today)
 
   // Get recent attendance records
-  const { data: recentAttendance } = await supabase
+  const { data: rawAttendance } = await supabase
     .from("attendance_records")
     .select(`
       id,
@@ -57,6 +66,16 @@ export default async function DashboardPage() {
     .in("subject_id", subjectIds.length > 0 ? subjectIds : ["00000000-0000-0000-0000-000000000000"])
     .order("scanned_at", { ascending: false, nullsFirst: false })
     .limit(10)
+
+  // Normalize Supabase join result (may return array or object for relations)
+  const recentAttendance: AttendanceRecord[] = (rawAttendance || []).map((r) => ({
+    id: r.id,
+    status: r.status,
+    session_date: r.session_date,
+    scanned_at: r.scanned_at,
+    students: Array.isArray(r.students) ? (r.students[0] ?? null) : r.students,
+    subjects: Array.isArray(r.subjects) ? (r.subjects[0] ?? null) : r.subjects,
+  }))
 
   const stats = [
     {
@@ -134,7 +153,7 @@ export default async function DashboardPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <RecentAttendanceTable records={recentAttendance || []} />
+          <RecentAttendanceTable records={recentAttendance} />
         </CardContent>
       </Card>
     </div>

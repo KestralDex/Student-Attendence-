@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Empty } from "@/components/ui/empty"
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription } from "@/components/ui/empty"
 import { Field, FieldLabel } from "@/components/ui/field"
 import {
   Table,
@@ -333,11 +333,13 @@ const exportToN8N = async () => {
     return (
       <Card>
         <CardContent className="py-10">
-          <Empty
-            icon={BookOpen}
-            title="No subjects available"
-            description="Add subjects first before scanning attendance"
-          />
+          <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon"><BookOpen /></EmptyMedia>
+          <EmptyTitle>No subjects available</EmptyTitle>
+          <EmptyDescription>Add subjects first before scanning attendance</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
         </CardContent>
       </Card>
     )
@@ -534,11 +536,13 @@ const exportToN8N = async () => {
             </CardHeader>
             <CardContent>
               {scanHistory.length === 0 ? (
-                <Empty
-                  icon={ScanLine}
-                  title="No scans yet"
-                  description="Start scanning to see history here"
-                />
+                <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon"><ScanLine /></EmptyMedia>
+          <EmptyTitle>No scans yet</EmptyTitle>
+          <EmptyDescription>Start scanning to see history here</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
               ) : (
                 <div className="space-y-3">
                   {scanHistory.map((scan, index) => (
@@ -603,11 +607,13 @@ const exportToN8N = async () => {
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
             ) : students.length === 0 ? (
-              <Empty
-                icon={Users}
-                title="No students found"
-                description={`No students registered for ${selectedSubjectData.year}. Import students first.`}
-              />
+              <Empty>
+                <EmptyHeader>
+                  <EmptyMedia variant="icon"><Users /></EmptyMedia>
+                  <EmptyTitle>No students found</EmptyTitle>
+                  <EmptyDescription>{`No students registered for ${selectedSubjectData.year}. Import students first.`}</EmptyDescription>
+                </EmptyHeader>
+              </Empty>
             ) : (
               <div className="rounded-md border">
                 <Table>

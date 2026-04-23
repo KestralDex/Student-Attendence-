@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Empty } from "@/components/ui/empty"
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription } from "@/components/ui/empty"
 import { ClipboardList } from "lucide-react"
 
 interface AttendanceRecord {
@@ -24,11 +24,13 @@ interface AttendanceRecord {
 export function RecentAttendanceTable({ records }: { records: AttendanceRecord[] }) {
   if (records.length === 0) {
     return (
-      <Empty
-        icon={ClipboardList}
-        title="No attendance records"
-        description="Start scanning QR codes to record attendance"
-      />
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon"><ClipboardList /></EmptyMedia>
+          <EmptyTitle>No attendance records</EmptyTitle>
+          <EmptyDescription>Start scanning QR codes to record attendance</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     )
   }
 
