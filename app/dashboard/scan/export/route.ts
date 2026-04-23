@@ -1,12 +1,8 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextRequest, NextResponse } from "next/server"
 
-// Use production webhook URL (drop -test for live workflow)
-// Switch between test and production based on environment
-const N8N_WEBHOOK_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://shete1319.app.n8n.cloud/webhook/76664403-3b71-4a00-91d9-ae89debfaee3"
-    : "https://shete1319.app.n8n.cloud/webhook-test/76664403-3b71-4a00-91d9-ae89debfaee3"
+// Production n8n webhook URL
+const N8N_WEBHOOK_URL = "https://shete1319.app.n8n.cloud/webhook/76664403-3b71-4a00-91d9-ae89debfaee3"
 
 export async function POST(request: NextRequest) {
   try {
@@ -64,3 +60,4 @@ export async function POST(request: NextRequest) {
     )
   }
 }
+
