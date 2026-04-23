@@ -1,13 +1,24 @@
-# QR Scanner n8n Webhook Integration Fix (CORS Proxy)
+# Student Attendance - Status & TODO
 
-## Steps:
-- [x] 1. Create TODO.md with plan
-- [x] 2. Create API proxy route app/dashboard/scan/export/route.ts
-- [x] 3. Update components/qr-scanner-client.tsx to use proxy endpoint
-- [x] 4. Test locally: npm run dev → /dashboard/scan → scan QR → Export to n8n (CORS fixed via proxy)
-- [ ] 5. Verify Supabase attendance + n8n receives data (check Network tab, n8n executions)
-- [ ] 6. Complete task
+## ✅ Completed
+- QR scanner with html5-qrcode
+- Supabase auth (login/signup)
+- Attendance recording via Supabase
+- n8n webhook proxy (CORS fix via /dashboard/scan/export route)
+- Fixed Next.js version (was 16.2.0 → now 15.3.1)
+- Proxy auto-uses test URL locally, production URL on Vercel
 
-**Next:** Run `npm run dev`, login → dashboard/scan, select subject, scan QR, click Export to n8n.
+## ⚙️ Vercel Setup Required
+Add these environment variables in Vercel project settings:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-**Status:** Starting proxy implementation to fix CORS error.
+## 📋 n8n Webhook URLs
+- Test (local dev): https://shete1319.app.n8n.cloud/webhook-test/76664403-3b71-4a00-91d9-ae89debfaee3
+- Production (Vercel): https://shete1319.app.n8n.cloud/webhook/76664403-3b71-4a00-91d9-ae89debfaee3
+  → Make sure to ACTIVATE the n8n workflow before deploying!
+
+## 🔲 Remaining
+- [ ] Add Supabase env vars to Vercel
+- [ ] Activate n8n workflow (not just test mode)
+- [ ] Verify attendance data flows end-to-end in production
