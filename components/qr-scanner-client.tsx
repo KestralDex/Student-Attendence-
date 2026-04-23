@@ -300,7 +300,7 @@ const exportToN8N = async () => {
     }
 
     try {
-      const response = await fetch("/dashboard/scan/export", {
+      const response = await fetch(`${window.location.origin}/dashboard/scan/export`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
