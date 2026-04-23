@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/select"
 import { FieldGroup, Field, FieldLabel } from "@/components/ui/field"
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription } from "@/components/ui/empty"
-import { Download, FileSpreadsheet, Loader2, BookOpen } from "lucide-react"
+import { Download, FileSpreadsheet, Loader2, BookOpen, CheckCircle, XCircle } from "lucide-react"
+import { toast } from "sonner"
 
 interface Subject {
   id: string
@@ -46,10 +47,12 @@ export function ExportClient({ subjects }: { subjects: Subject[] }) {
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
   const [loading, setLoading] = useState(false)
+  const [exportStatus, setExportStatus] = useState<"idle" | "success" | "error">("idle")
 
   const handleExport = async () => {
     if (!selectedSubject || !startDate || !endDate) return
     setLoading(true)
+    setExportStatus("idle")
 
     const supabase = createClient()
 
@@ -67,40 +70,83 @@ export function ExportClient({ subjects }: { subjects: Subject[] }) {
       .order("session_date", { ascending: true })
 
     if (error || !rawRecords) {
-      console.error("Export error:", error)
+      console.error("Export fetch error:", error)
+      toast.error("Failed to fetch attendance records from database.")
+      setExportStatus("error")
       setLoading(false)
       return
     }
 
+    const subject = subjects.find((s) => s.id === selectedSubject)
+
     const records = (rawRecords as AttendanceRow[]).map((r) => ({
-      ...r,
-      students: normalizeStudent(r.students),
+      session_date: r.session_date,
+      status: r.status,
+      scanned_at: r.scanned_at ? new Date(r.scanned_at).toLocaleString() : "",
+      student_name: normalizeStudent(r.students)?.name || "",
+      roll_no: normalizeStudent(r.students)?.roll_no || "",
+      email: normalizeStudent(r.students)?.email || "",
+      year: normalizeStudent(r.students)?.year || "",
+      subject_name: subject?.name || "",
+      subject_year: subject?.year || "",
     }))
 
-    // Generate CSV
-    const subject = subjects.find((s) => s.id === selectedSubject)
-    const headers = ["Date", "Student Name", "Roll No", "Email", "Year", "Status", "Scanned At"]
-    const rows = records.map((record) => [
-      record.session_date,
-      record.students?.name || "",
-      record.students?.roll_no || "",
-      record.students?.email || "",
-      record.students?.year || "",
-      record.status,
-      record.scanned_at ? new Date(record.scanned_at).toLocaleString() : "",
-    ])
+    // Send to n8n via our proxy route
+    try {
+      const response = await fetch("/dashboard/scan/export", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject_id: selectedSubject,
+          subject_name: subject?.name,
+          subject_year: subject?.year,
+          start_date: startDate,
+          end_date: endDate,
+          record_count: records.length,
+          records,
+        }),
+      })
 
-    const csvContent = [
-      headers.join(","),
-      ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
-    ].join("\n")
+      const result = await response.json()
 
-    // Download file
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
-    const link = document.createElement("a")
-    link.href = URL.createObjectURL(blob)
-    link.download = `attendance_${subject?.name.replace(/\s+/g, "_")}_${startDate}_to_${endDate}.csv`
-    link.click()
+      if (!response.ok) {
+        console.error("n8n export failed:", result)
+        toast.error(`Export failed: ${result.details || result.error || "Unknown error"}`)
+        setExportStatus("error")
+        setLoading(false)
+        return
+      }
+
+      // Also download CSV locally
+      const headers = ["Date", "Student Name", "Roll No", "Email", "Year", "Status", "Scanned At"]
+      const rows = records.map((r) => [
+        r.session_date,
+        r.student_name,
+        r.roll_no,
+        r.email,
+        r.year,
+        r.status,
+        r.scanned_at,
+      ])
+
+      const csvContent = [
+        headers.join(","),
+        ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
+      ].join("\n")
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+      const link = document.createElement("a")
+      link.href = URL.createObjectURL(blob)
+      link.download = `attendance_${subject?.name.replace(/\s+/g, "_")}_${startDate}_to_${endDate}.csv`
+      link.click()
+
+      toast.success(`Exported ${records.length} records to Google Sheets & downloaded CSV!`)
+      setExportStatus("success")
+    } catch (err) {
+      console.error("Export error:", err)
+      toast.error("Something went wrong sending data to n8n.")
+      setExportStatus("error")
+    }
 
     setLoading(false)
   }
@@ -110,12 +156,12 @@ export function ExportClient({ subjects }: { subjects: Subject[] }) {
       <Card>
         <CardContent className="py-10">
           <Empty>
-        <EmptyHeader>
-          <EmptyMedia variant="icon"><BookOpen /></EmptyMedia>
-          <EmptyTitle>No subjects available</EmptyTitle>
-          <EmptyDescription>Add subjects first to export attendance data</EmptyDescription>
-        </EmptyHeader>
-      </Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon"><BookOpen /></EmptyMedia>
+              <EmptyTitle>No subjects available</EmptyTitle>
+              <EmptyDescription>Add subjects first to export attendance data</EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         </CardContent>
       </Card>
     )
@@ -175,10 +221,14 @@ export function ExportClient({ subjects }: { subjects: Subject[] }) {
           >
             {loading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : exportStatus === "success" ? (
+              <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+            ) : exportStatus === "error" ? (
+              <XCircle className="mr-2 h-4 w-4 text-red-500" />
             ) : (
               <Download className="mr-2 h-4 w-4" />
             )}
-            Export to CSV
+            {loading ? "Exporting..." : exportStatus === "success" ? "Exported!" : exportStatus === "error" ? "Try Again" : "Export to Sheets & CSV"}
           </Button>
         </CardContent>
       </Card>
@@ -195,9 +245,9 @@ export function ExportClient({ subjects }: { subjects: Subject[] }) {
                 <FileSpreadsheet className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <p className="font-medium">CSV Format</p>
+                <p className="font-medium">Google Sheets + CSV</p>
                 <p className="text-sm text-muted-foreground">
-                  Compatible with Excel, Google Sheets, and other spreadsheet applications
+                  Data is sent to Google Sheets via n8n and also downloaded as a CSV file
                 </p>
               </div>
             </div>
@@ -218,8 +268,9 @@ export function ExportClient({ subjects }: { subjects: Subject[] }) {
             <p className="text-sm font-medium mb-2">Quick Tips:</p>
             <ul className="text-sm text-muted-foreground space-y-1">
               <li>- Select a date range to filter records</li>
-              <li>- Files are named with subject and date range</li>
-              <li>- Large exports may take a moment to process</li>
+              <li>- Data goes to Google Sheets automatically</li>
+              <li>- A CSV backup is also downloaded locally</li>
+              <li>- Make sure the n8n workflow is active (not test mode)</li>
             </ul>
           </div>
         </CardContent>
