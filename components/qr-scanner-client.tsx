@@ -316,7 +316,8 @@ const exportToN8N = async () => {
           description: `Attendance data for ${selectedSubjectData.name} sent to n8n webhook`,
         })
       } else {
-        throw new Error(result.error || `HTTP ${response.status}`)
+        const detail = result.details || result.error || `HTTP ${response.status}`
+        throw new Error(detail)
       }
     } catch (error: any) {
       toast({
