@@ -1,33 +1,15 @@
-/**
- * /dashboard/scan/export  — POST
- *
- * Proxy route: receives attendance payload from the frontend,
- * fetches a Google OAuth token server-side, and forwards everything
- * to the Base44 syncAttendanceToSheets function.
- *
- * Replaces the old n8n webhook proxy.
- */
-
 import { createClient } from "@/lib/supabase/server"
 import { NextRequest, NextResponse } from "next/server"
 
-// ── Base44 config ───────────────────────────────────────────────────
-const BASE44_FUNCTION_URL =
-  "https://69ebd5ce42f9355648bf96b0.base44.app/functions/syncAttendanceToSheets"
-
-// Service token for Base44 backend function auth (add to Vercel env vars)
-// Get this from: https://app.base44.com → your app → Settings → API Keys
-const BASE44_SERVICE_TOKEN = process.env.BASE44_SERVICE_TOKEN ?? ""
-
-// Google OAuth token — server-side only (add to Vercel env vars)
-// This is a long-lived refresh token or a service-account token with Sheets access.
-// Simplest approach: use a Google service account JSON key and generate a token,
-// OR paste your OAuth access token here temporarily for testing.
-const GOOGLE_ACCESS_TOKEN = process.env.GOOGLE_SHEETS_ACCESS_TOKEN ?? ""
+// Use test URL for local/staging testing
+// Switch to production URL when activating the n8n workflow for real deployment
+const N8N_WEBHOOK_URL = process.env.NODE_ENV === "production" && process.env.N8N_USE_PROD === "true"
+  ? "https://shete1319.app.n8n.cloud/webhook/76664403-3b71-4a00-91d9-ae89debfaee3"
+  : "https://shete1319.app.n8n.cloud/webhook-test/76664403-3b71-4a00-91d9-ae89debfaee3"
 
 export async function POST(request: NextRequest) {
   try {
-    // Verify Supabase auth
+    // Verify auth
     const supabase = await createClient()
     const {
       data: { user },
@@ -37,46 +19,42 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!GOOGLE_ACCESS_TOKEN) {
-      return NextResponse.json(
-        { error: "GOOGLE_SHEETS_ACCESS_TOKEN env var is not set on the server." },
-        { status: 500 }
-      )
-    }
-
     const body = await request.json()
 
-    // Forward to Base44 with the Google token injected server-side
-    const base44Response = await fetch(BASE44_FUNCTION_URL, {
+    // Forward to n8n webhook
+    const n8nResponse = await fetch(N8N_WEBHOOK_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // Base44 service auth — allows calling the function without a browser session
-        ...(BASE44_SERVICE_TOKEN ? { Authorization: `Bearer ${BASE44_SERVICE_TOKEN}` } : {}),
       },
-      body: JSON.stringify({
-        ...body,
-        googleToken: GOOGLE_ACCESS_TOKEN,
-        // map subject_year from export-client payload
-        subject_year: body.subject_year ?? body.records?.[0]?.year,
-      }),
+      body: JSON.stringify(body),
     })
 
-    const responseText = await base44Response.text()
-    let result: Record<string, unknown> = {}
-    if (responseText) {
-      try { result = JSON.parse(responseText) } catch { result = { message: responseText } }
-    }
-
-    if (!base44Response.ok) {
-      console.error("Base44 sync error:", base44Response.status, result)
+    if (!n8nResponse.ok) {
+      const errorText = await n8nResponse.text()
+      console.error("n8n webhook error:", n8nResponse.status, errorText)
       return NextResponse.json(
-        { error: "Failed to sync to Google Sheets", details: result },
-        { status: base44Response.status }
+        {
+          error: "Failed to send to n8n",
+          details: errorText,
+          status: n8nResponse.status,
+        },
+        { status: n8nResponse.status }
       )
     }
 
-    return NextResponse.json({ success: true, ...result })
+    // n8n may return empty body on success, handle gracefully
+    let n8nData = {}
+    const responseText = await n8nResponse.text()
+    if (responseText) {
+      try {
+        n8nData = JSON.parse(responseText)
+      } catch {
+        n8nData = { message: responseText }
+      }
+    }
+
+    return NextResponse.json({ success: true, message: "Data sent to n8n", n8n: n8nData })
   } catch (error) {
     console.error("Export proxy error:", error)
     return NextResponse.json(
