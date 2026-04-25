@@ -11,6 +11,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription } from "@/components/ui/empty"
 import { Field, FieldLabel } from "@/components/ui/field"
@@ -22,7 +33,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ScanLine, Camera, CheckCircle, XCircle, AlertTriangle, BookOpen, Users, Clock, Loader2, Send } from "lucide-react"
+import { ScanLine, Camera, CheckCircle, XCircle, AlertTriangle, BookOpen, Users, Clock, Loader2, Send, RotateCcw } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { Html5Qrcode } from "html5-qrcode"
 
@@ -62,6 +73,7 @@ export function QRScannerClient({ subjects }: { subjects: Subject[] }) {
   const [attendanceMap, setAttendanceMap] = useState<Record<string, AttendanceStatus>>({})
   const [loadingStudents, setLoadingStudents] = useState(false)
   const [exporting, setExporting] = useState(false)
+  const [resetting, setResetting] = useState(false)
   const scannerRef = useRef<Html5Qrcode | null>(null)
   const { toast } = useToast()
 
@@ -126,6 +138,56 @@ export function QRScannerClient({ subjects }: { subjects: Subject[] }) {
       }
     }
   }, [])
+
+  // ── Reset Session ────────────────────────────────────────────
+  const resetSession = async () => {
+    if (!selectedSubject || students.length === 0) return
+
+    setResetting(true)
+    const supabase = createClient()
+    const today = new Date().toISOString().split("T")[0]
+    const studentIds = students.map(s => s.id)
+
+    // Delete today's attendance records for this subject from Supabase
+    const { error } = await supabase
+      .from("attendance_records")
+      .delete()
+      .eq("subject_id", selectedSubject)
+      .eq("session_date", today)
+      .in("student_id", studentIds)
+
+    if (error) {
+      toast({
+        title: "Reset Failed",
+        description: "Could not reset attendance records. Please try again.",
+        variant: "destructive",
+      })
+      setResetting(false)
+      return
+    }
+
+    // Reset local state — all students back to absent + empty scannedAt
+    const resetMap: Record<string, AttendanceStatus> = {}
+    students.forEach(student => {
+      resetMap[student.id] = {
+        studentId: student.id,
+        status: "absent",
+        scannedAt: null,
+      }
+    })
+    setAttendanceMap(resetMap)
+
+    // Clear scan history and last scan
+    setScanHistory([])
+    setLastScan(null)
+
+    toast({
+      title: "Session Reset",
+      description: `All ${students.length} students reset to Absent for today's session.`,
+    })
+
+    setResetting(false)
+  }
 
   const handleQRScan = async (qrCode: string) => {
     if (!selectedSubject) return
@@ -263,7 +325,7 @@ export function QRScannerClient({ subjects }: { subjects: Subject[] }) {
   const presentCount = Object.values(attendanceMap).filter(a => a.status === "present").length
   const absentCount = students.length - presentCount
 
-const exportToN8N = async () => {
+  const exportToN8N = async () => {
     if (!selectedSubjectData || students.length === 0) return
 
     setExporting(true)
@@ -335,12 +397,12 @@ const exportToN8N = async () => {
       <Card>
         <CardContent className="py-10">
           <Empty>
-        <EmptyHeader>
-          <EmptyMedia variant="icon"><BookOpen /></EmptyMedia>
-          <EmptyTitle>No subjects available</EmptyTitle>
-          <EmptyDescription>Add subjects first before scanning attendance</EmptyDescription>
-        </EmptyHeader>
-      </Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon"><BookOpen /></EmptyMedia>
+              <EmptyTitle>No subjects available</EmptyTitle>
+              <EmptyDescription>Add subjects first before scanning attendance</EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         </CardContent>
       </Card>
     )
@@ -348,99 +410,67 @@ const exportToN8N = async () => {
 
   return (
     <div className="space-y-6">
-      {/* Scanner and Status Cards */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      {/* Subject selector */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BookOpen className="h-5 w-5" />
+            Select Subject
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Field>
+            <FieldLabel>Subject</FieldLabel>
+            <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+              <SelectTrigger>
+                <SelectValue placeholder="Choose a subject to take attendance" />
+              </SelectTrigger>
+              <SelectContent>
+                {subjects.map(subject => (
+                  <SelectItem key={subject.id} value={subject.id}>
+                    {subject.name} ({subject.year})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* QR Scanner */}
         <div className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <ScanLine className="h-5 w-5" />
+                <Camera className="h-5 w-5" />
                 QR Scanner
               </CardTitle>
               <CardDescription>
-                Select a subject and start scanning student QR codes
+                {selectedSubject
+                  ? "Point camera at student QR code"
+                  : "Select a subject first"}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Field>
-                <FieldLabel>Select Subject</FieldLabel>
-                <Select
-                  value={selectedSubject}
-                  onValueChange={setSelectedSubject}
-                  disabled={scanning}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose a subject" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {subjects.map((subject) => (
-                      <SelectItem key={subject.id} value={subject.id}>
-                        {subject.name} ({subject.year})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-
-              {/* Camera Container - Always visible */}
-              <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-black border-2 border-muted">
-                {/* QR Reader container - must always be in DOM for html5-qrcode */}
-                <div
-                  id="qr-reader"
-                  className="absolute inset-0 w-full h-full"
-                  style={{ 
-                    visibility: scanning ? 'visible' : 'hidden',
-                  }}
-                />
-                
-                {/* Placeholder when not scanning */}
-                {!scanning && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-muted">
-                    <div className="text-center">
-                      <Camera className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                      <p className="text-muted-foreground">
-                        Camera preview will appear here
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-2">
-                        Select a subject and click Start Scanning
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Scanning overlay */}
-                {scanning && (
-                  <div className="absolute inset-0 pointer-events-none z-10">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border-2 border-primary rounded-lg">
-                      <div className="absolute top-0 left-0 w-4 h-4 border-t-4 border-l-4 border-primary rounded-tl-lg" />
-                      <div className="absolute top-0 right-0 w-4 h-4 border-t-4 border-r-4 border-primary rounded-tr-lg" />
-                      <div className="absolute bottom-0 left-0 w-4 h-4 border-b-4 border-l-4 border-primary rounded-bl-lg" />
-                      <div className="absolute bottom-0 right-0 w-4 h-4 border-b-4 border-r-4 border-primary rounded-br-lg" />
-                    </div>
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
-                      <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                      Scanning...
-                    </div>
-                  </div>
-                )}
-              </div>
-
+              <div id="qr-reader" className="w-full" />
               <div className="flex gap-2">
                 {!scanning ? (
                   <Button
-                    className="flex-1"
                     onClick={startScanning}
                     disabled={!selectedSubject}
+                    className="flex-1 gap-2"
                   >
-                    <Camera className="mr-2 h-4 w-4" />
+                    <Camera className="h-4 w-4" />
                     Start Scanning
                   </Button>
                 ) : (
                   <Button
-                    className="flex-1"
-                    variant="destructive"
                     onClick={stopScanning}
+                    variant="outline"
+                    className="flex-1 gap-2"
                   >
+                    <XCircle className="h-4 w-4" />
                     Stop Scanning
                   </Button>
                 )}
@@ -449,34 +479,18 @@ const exportToN8N = async () => {
           </Card>
 
           {lastScan && (
-            <Card
-              className={
-                lastScan.success
-                  ? "border-green-200 bg-green-50"
-                  : "border-red-200 bg-red-50"
-              }
-            >
-              <CardContent className="pt-6">
-                <div className="flex items-start gap-4">
+            <Card className={lastScan.success ? "border-green-200 bg-green-50" : "border-amber-200 bg-amber-50"}>
+              <CardContent className="pt-4">
+                <div className="flex items-start gap-3">
                   {lastScan.success ? (
-                    <CheckCircle className="h-8 w-8 text-green-600 shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" />
                   ) : (
-                    <XCircle className="h-8 w-8 text-red-600 shrink-0" />
+                    <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
                   )}
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-lg truncate">
-                      {lastScan.studentName}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Roll No: {lastScan.rollNo}
-                    </p>
-                    <p
-                      className={`text-sm mt-1 ${
-                        lastScan.success ? "text-green-700" : "text-red-700"
-                      }`}
-                    >
-                      {lastScan.message}
-                    </p>
+                  <div>
+                    <p className="font-medium">{lastScan.studentName}</p>
+                    <p className="text-sm text-muted-foreground">{lastScan.rollNo}</p>
+                    <p className="text-sm mt-1">{lastScan.message}</p>
                   </div>
                 </div>
               </CardContent>
@@ -538,12 +552,12 @@ const exportToN8N = async () => {
             <CardContent>
               {scanHistory.length === 0 ? (
                 <Empty>
-        <EmptyHeader>
-          <EmptyMedia variant="icon"><ScanLine /></EmptyMedia>
-          <EmptyTitle>No scans yet</EmptyTitle>
-          <EmptyDescription>Start scanning to see history here</EmptyDescription>
-        </EmptyHeader>
-      </Empty>
+                  <EmptyHeader>
+                    <EmptyMedia variant="icon"><ScanLine /></EmptyMedia>
+                    <EmptyTitle>No scans yet</EmptyTitle>
+                    <EmptyDescription>Start scanning to see history here</EmptyDescription>
+                  </EmptyHeader>
+                </Empty>
               ) : (
                 <div className="space-y-3">
                   {scanHistory.map((scan, index) => (
@@ -559,9 +573,7 @@ const exportToN8N = async () => {
                         )}
                         <div className="min-w-0">
                           <p className="font-medium truncate">{scan.studentName}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {scan.rollNo}
-                          </p>
+                          <p className="text-xs text-muted-foreground">{scan.rollNo}</p>
                         </div>
                       </div>
                       <Badge variant={scan.success ? "default" : "secondary"}>
@@ -587,7 +599,9 @@ const exportToN8N = async () => {
             <CardDescription>
               Live attendance status for today&apos;s session
             </CardDescription>
-            <div className="pt-2">
+            {/* ── Action Buttons ── */}
+            <div className="pt-2 flex items-center gap-3 flex-wrap">
+              {/* Export to n8n */}
               <Button
                 onClick={exportToN8N}
                 disabled={exporting || students.length === 0}
@@ -600,6 +614,46 @@ const exportToN8N = async () => {
                 )}
                 Export to n8n
               </Button>
+
+              {/* Reset Session — with confirmation dialog */}
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    disabled={resetting || students.length === 0}
+                    className="gap-2 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-300"
+                  >
+                    {resetting ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <RotateCcw className="h-4 w-4" />
+                    )}
+                    Reset Session
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Reset Today&apos;s Session?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will delete all attendance records for{" "}
+                      <strong>{selectedSubjectData.name}</strong> for today&apos;s session.
+                      All <strong>{presentCount} present</strong> students will be reset to{" "}
+                      <strong>Absent</strong> and their scan times will be cleared.
+                      <br /><br />
+                      This action <strong>cannot be undone</strong>.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={resetSession}
+                      className="bg-red-600 hover:bg-red-700 text-white"
+                    >
+                      Yes, Reset Session
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </CardHeader>
           <CardContent>
@@ -632,7 +686,7 @@ const exportToN8N = async () => {
                       const attendance = attendanceMap[student.id]
                       const isPresent = attendance?.status === "present"
                       return (
-                        <TableRow 
+                        <TableRow
                           key={student.id}
                           className={isPresent ? "bg-green-50" : ""}
                         >
